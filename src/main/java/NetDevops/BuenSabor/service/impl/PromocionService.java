@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoCantidadDto;
 import NetDevops.BuenSabor.dto.promocion.ArticuloPromocionDto;
 import NetDevops.BuenSabor.dto.promocion.PromocionDetalleDto;
 import NetDevops.BuenSabor.dto.promocion.PromocionDto;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -82,6 +85,7 @@ public class PromocionService implements IPromocionService {
         for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
             dto.getPromocionDetallesDto().add(convertirDetalleToDto(detalle));
         }
+        dto.setArticulosManufacturadosCantidad(calcularCantidadMaximaProducto(promocion));
         return dto;
     }
 
@@ -270,4 +274,75 @@ public class PromocionService implements IPromocionService {
 
 
     }
+
+
+  public List<PromocionDto> obtenerPromocionesValidasPorSucursalYFecha(Long sucursalId) {
+    LocalDate fechaActual = LocalDate.now();
+    List<Promocion> promociones = promocionRepository.findPromocionesValidasPorSucursalYFecha(sucursalId, fechaActual);
+
+    return promociones.stream()
+            .filter(promocion -> tieneStockSuficiente(promocion))
+            .map(promocion -> {
+                PromocionDto dto = convertToDto(promocion);
+                dto.setCantidadMaximaDisponible(calcularCantidadMaxima(promocion));
+                return dto;
+            })
+            .collect(Collectors.toList());
+}
+
+private boolean tieneStockSuficiente(Promocion promocion) {
+    for (PromocionDetalle detallePromocion : promocion.getPromocionDetalles()) {
+        ArticuloManufacturado articuloManufacturado = detallePromocion.getArticuloManufacturado();
+        for (ArticuloManufacturadoDetalle detalleManufacturado : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+            ArticuloInsumo insumo = detalleManufacturado.getArticuloInsumo();
+            // La cantidad necesaria del insumo por cada unidad del artículo manufacturado
+            int cantidadNecesariaPorUnidad = detalleManufacturado.getCantidad();
+            // La cantidad total necesaria del insumo para la cantidad de la promoción
+            int cantidadTotalNecesaria = cantidadNecesariaPorUnidad * detallePromocion.getCantidad();
+            if (insumo.getStockActual() < cantidadTotalNecesaria) {
+                return false; // No hay suficiente stock del insumo para esta promoción
+            }
+        }
+    }
+    return true; // Todos los insumos tienen suficiente stock
+}
+
+public int calcularCantidadMaxima(Promocion promocion) {
+    int cantidadMaxima = Integer.MAX_VALUE;
+    for (PromocionDetalle detallePromocion : promocion.getPromocionDetalles()) {
+        ArticuloManufacturado articuloManufacturado = detallePromocion.getArticuloManufacturado();
+        for (ArticuloManufacturadoDetalle detalleManufacturado : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+            ArticuloInsumo insumo = detalleManufacturado.getArticuloInsumo();
+            int cantidadNecesariaPorUnidad = detalleManufacturado.getCantidad();
+            int cantidadTotalNecesaria = cantidadNecesariaPorUnidad * detallePromocion.getCantidad();
+            int cantidadMaximaPorInsumo = insumo.getStockActual() / cantidadTotalNecesaria;
+            if (cantidadMaximaPorInsumo < cantidadMaxima) {
+                cantidadMaxima = cantidadMaximaPorInsumo;
+            }
+        }
+    }
+    return cantidadMaxima == Integer.MAX_VALUE ? 0 : cantidadMaxima;
+}
+
+private List<ArticuloManufacturadoCantidadDto> calcularCantidadMaximaProducto(Promocion promocion) {
+    List<ArticuloManufacturadoCantidadDto> cantidadesMaximas = new ArrayList<>();
+    for (PromocionDetalle detallePromocion : promocion.getPromocionDetalles()) {
+        ArticuloManufacturado articuloManufacturado = detallePromocion.getArticuloManufacturado();
+        int cantidadMaxima = Integer.MAX_VALUE;
+        for (ArticuloManufacturadoDetalle detalleManufacturado : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+            ArticuloInsumo insumo = detalleManufacturado.getArticuloInsumo();
+            int cantidadNecesariaPorUnidad = detalleManufacturado.getCantidad();
+            int cantidadTotalNecesaria = cantidadNecesariaPorUnidad * detallePromocion.getCantidad();
+            int cantidadMaximaPorInsumo = insumo.getStockActual() / cantidadTotalNecesaria;
+            if (cantidadMaximaPorInsumo < cantidadMaxima) {
+                cantidadMaxima = cantidadMaximaPorInsumo;
+            }
+        }
+        cantidadesMaximas.add(new ArticuloManufacturadoCantidadDto(articuloManufacturado.getId(), cantidadMaxima == Integer.MAX_VALUE ? 0 : cantidadMaxima));
+    }
+    return cantidadesMaximas;
+}
+
+
+
 }

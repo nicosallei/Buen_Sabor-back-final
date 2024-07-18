@@ -118,28 +118,29 @@ public class UsuarioService implements IUsuarioService {
         return userResponse;
     }
 
-    // Si no se encuentra en ninguno de los dos, lanza una excepción
+
     throw new InvalidCredentialsException("Invalid username or password");
 }
 
     public UsuarioCliente registrarUsuario(RegistroDto registroDto) throws Exception {
-        // Check if the username already exists
-        if (usuarioClienteRepository.existsByUsername(registroDto.getUsername())) {
-            throw new Exception("Username already exists");
-        }
 
-        // Create a new UsuarioCliente and set its properties from registroDto
+       if (clienteRepository.existsByEmail(registroDto.getCliente().getEmail()) ||
+    empleadoRepository.existsByEmail(registroDto.getCliente().getEmail())) {
+    throw new Exception("Username or email already exists");
+}
+
+
         UsuarioCliente usuario = new UsuarioCliente();
-        usuario.setUsername(registroDto.getUsername());
+        usuario.setUsername(registroDto.getCliente().getEmail());
 
-        // Hash the password before saving it
+
         String hashedPassword = seguridadService.hashWithSHA256(registroDto.getPassword());
         usuario.setPassword(hashedPassword);
 
-        // Save the new UsuarioCliente to the database
+
         UsuarioCliente savedUsuario = usuarioClienteRepository.save(usuario);
 
-        // Create a new Cliente and set its properties from registroDto
+
         Cliente cliente = new Cliente();
         cliente.setNombre(registroDto.getCliente().getNombre());
         cliente.setApellido(registroDto.getCliente().getApellido());
@@ -148,52 +149,47 @@ public class UsuarioService implements IUsuarioService {
         cliente.setFechaNacimiento(registroDto.getCliente().getFechaNacimiento());
         cliente.setImagen(registroDto.getCliente().getImagen());
 
-        // Set the saved UsuarioCliente to the Cliente
+
         cliente.setUsuarioCliente(savedUsuario);
 
-        // Save the Cliente to the database
         clienteRepository.save(cliente);
 
         return savedUsuario;
     }
 
     public UsuarioEmpleado registrarEmpleado(RegistroDtoEmpleado registroDtoEmpleado) throws Exception {
-    // Check if the username already exists
-    if (usuarioEmpleadoRepository.existsByUsername(registroDtoEmpleado.getUsername())) {
-        throw new Exception("Username already exists");
-    }
 
-    // Create a new UsuarioEmpleado and set its properties from registroDto
+        if (clienteRepository.existsByEmail(registroDtoEmpleado.getEmail()) ||
+                empleadoRepository.existsByEmail(registroDtoEmpleado.getEmail())) {
+            throw new Exception("Username or email already exists");
+        }
+
     UsuarioEmpleado usuario = new UsuarioEmpleado();
-    usuario.setUsername(registroDtoEmpleado.getUsername());
+    usuario.setUsername(registroDtoEmpleado.getEmail());
 
-    // Hash the password before saving it
     String hashedPassword = seguridadService.hashWithSHA256(registroDtoEmpleado.getPassword());
     usuario.setPassword(hashedPassword);
 
-    // Save the new UsuarioEmpleado to the database
     UsuarioEmpleado savedUsuario = usuarioEmpleadoRepository.save(usuario);
 
-    // Create a new Empleado and set its properties from registroDto
     Empleado empleado = new Empleado();
-    empleado.setNombre(registroDtoEmpleado.getEmpleado().getNombre());
-    empleado.setApellido(registroDtoEmpleado.getEmpleado().getApellido());
-    empleado.setTelefono(registroDtoEmpleado.getEmpleado().getTelefono());
-    empleado.setEmail(registroDtoEmpleado.getEmpleado().getEmail());
-    empleado.setFechaNacimiento(registroDtoEmpleado.getEmpleado().getFechaNacimiento());
+    empleado.setNombre(registroDtoEmpleado.getNombre());
+    empleado.setApellido(registroDtoEmpleado.getApellido());
+    empleado.setTelefono(registroDtoEmpleado.getTelefono());
+    empleado.setEmail(registroDtoEmpleado.getEmail());
+    empleado.setFechaNacimiento(registroDtoEmpleado.getFechaNacimiento());
 
-        if (registroDtoEmpleado.getEmpleado().getImagen() != null) {
-            String rutaImagen = funcionalidades.guardarImagen(registroDtoEmpleado.getEmpleado().getImagen(), UUID.randomUUID().toString() + ".jpg");
-            registroDtoEmpleado.getEmpleado().setImagen(rutaImagen);
+        if (registroDtoEmpleado.getImagen() != null) {
+            String rutaImagen = funcionalidades.guardarImagen(registroDtoEmpleado.getImagen(), UUID.randomUUID().toString() + ".jpg");
+            registroDtoEmpleado.setImagen(rutaImagen);
         }
-    empleado.setImagen(registroDtoEmpleado.getEmpleado().getImagen());
-    empleado.setSucursal(registroDtoEmpleado.getEmpleado().getSucursal());
-    empleado.setRol(registroDtoEmpleado.getEmpleado().getRol());
+    empleado.setImagen(registroDtoEmpleado.getImagen());
+    empleado.setSucursal(registroDtoEmpleado.getSucursal());
+    empleado.setRol(registroDtoEmpleado.getRol());
 
-    // Set the saved UsuarioEmpleado to the Empleado
+
     empleado.setUsuarioEmpleado(savedUsuario);
 
-    // Save the Empleado to the database
     empleadoRepository.save(empleado);
 
     return savedUsuario;
