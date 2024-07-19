@@ -6,6 +6,7 @@ import NetDevops.BuenSabor.dto.pedido.PedidoDto;
 import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.enums.Rol;
+import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.IClienteRepository;
 import NetDevops.BuenSabor.repository.IPedidoRepository;
@@ -31,6 +32,8 @@ private PdfService pdfService;
 private EmailService emailService;
 @Autowired
 private IClienteRepository clienteRepository;
+@Autowired
+private IAriticuloInsumoRepository articuloRepository;
 
     @Override
     public Pedido crearPedido(Pedido pedido) throws Exception {
@@ -153,39 +156,56 @@ public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{
 
 
 public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Exception {
-    try {
-        Pedido pedido = pedidoRepository.findById(id).orElse(null);
-        //Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
-        Cliente cliente = clienteRepository.findById(7L).orElse(null);
-        if (pedido == null) {
-            throw new Exception("Pedido no encontrado");
+        try {
+            Pedido pedido = pedidoRepository.findById(id).orElse(null);
+            //Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
+            Cliente cliente = clienteRepository.findById(7L).orElse(null);
+            if (pedido == null) {
+                throw new Exception("Pedido no encontrado");
+            }
+
+            // Comprobar si el estado actual es FACTURADO
+            if (pedido.getEstado() == Estado.ENTREGADO) {
+                throw new Exception("No se puede cambiar el estado de un pedido ya facturado");
+            } else if (pedido.getEstado() == Estado.CONFIRMADO && nuevoEstado == Estado.PENDIENTE) {
+
+                throw new Exception("No se puede cambiar el estado de un pedido confirmado a pendiente");
+            } else if(pedido.getEstado() == Estado.CANCELADO){
+                throw new Exception("No se puede cambiar el estado de un pedido cancelado");
+            }else if(nuevoEstado == Estado.ENTREGADO){
+
+                // Generate PDF
+                byte[] pdf = pdfService.createPdfPedido(pedido,cliente);
+                // Send email
+                String to = cliente.getEmail(); // replace with the customer's email
+                String subject = "Pedido creado";
+                String content = "Su pedido ha sido creado con éxito. Encuentra adjunta la factura.";
+                emailService.sendEmailWithAttachment(to, subject, content, pdf);
+            }
+
+        if (nuevoEstado == Estado.CANCELADO) {
+    for (PedidoDetalle detalle : pedido.getPedidoDetalle()) {
+        if (detalle.getArticulo() instanceof ArticuloManufacturado) {
+            ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) detalle.getArticulo();
+            for (ArticuloManufacturadoDetalle detalleManufacturado : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                ArticuloInsumo articuloInsumo = detalleManufacturado.getArticuloInsumo();
+                // Calcular la cantidad necesaria para devolver al stock
+                int cantidadNecesaria = detalleManufacturado.getCantidad() * detalle.getCantidad();
+                // Actualizar el stockActual de ArticuloInsumo
+                articuloInsumo.setStockActual(articuloInsumo.getStockActual() + cantidadNecesaria);
+                // Guardar el ArticuloInsumo actualizado
+                articuloRepository.save(articuloInsumo);
+            }
         }
-
-        // Comprobar si el estado actual es FACTURADO
-        if (pedido.getEstado() == Estado.ENTREGADO) {
-            throw new Exception("No se puede cambiar el estado de un pedido ya facturado");
-        } else if (pedido.getEstado() == Estado.CONFIRMADO && nuevoEstado == Estado.PENDIENTE) {
-
-            throw new Exception("No se puede cambiar el estado de un pedido confirmado a pendiente");
-        } else if(pedido.getEstado() == Estado.CANCELADO){
-            throw new Exception("No se puede cambiar el estado de un pedido cancelado");
-        }else if(nuevoEstado == Estado.ENTREGADO){
-
-            // Generate PDF
-            byte[] pdf = pdfService.createPdfPedido(pedido,cliente);
-            // Send email
-            String to = cliente.getEmail(); // replace with the customer's email
-            String subject = "Pedido creado";
-            String content = "Su pedido ha sido creado con éxito. Encuentra adjunta la factura.";
-            emailService.sendEmailWithAttachment(to, subject, content, pdf);
-        }
-
-        pedido.setEstado(nuevoEstado);
-        Pedido savedPedido = pedidoRepository.save(pedido);
-
-        return convertToDto(savedPedido); // Convertir a PedidoDto antes de devolver
-    } catch (Exception e) {
-        throw new Exception(e.getMessage());
     }
 }
+
+            pedido.setEstado(nuevoEstado);
+            Pedido savedPedido = pedidoRepository.save(pedido);
+
+            return convertToDto(savedPedido); // Convertir a PedidoDto antes de devolver
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }

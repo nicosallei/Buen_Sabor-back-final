@@ -26,5 +26,6 @@ public class CompraPedidoDto extends BaseDto {
     private Factura factura;
     private TipoEnvio tipoEnvio;
     private FormaPago formaPago;
+    private int tiempoEspera;
 
 }

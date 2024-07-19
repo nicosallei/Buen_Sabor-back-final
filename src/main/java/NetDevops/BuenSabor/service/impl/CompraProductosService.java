@@ -141,7 +141,7 @@ private CompraProductoDto convertToDto(Articulo articulo) {
     try {
 
         Map<Long, Integer> insumosNecesarios = new HashMap<>();
-
+        int tiempoTotalEspera = 0;
         // Calcular la cantidad total necesaria de cada insumo
         for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {
             Articulo articulo = articuloRepository.findById(detalleDto.getProducto().getId())
@@ -150,6 +150,9 @@ private CompraProductoDto convertToDto(Articulo articulo) {
             if (articulo instanceof ArticuloInsumo) {
                 insumosNecesarios.merge(articulo.getId(), detalleDto.getCantidad(), Integer::sum);
             } else if (articulo instanceof ArticuloManufacturado) {
+                ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) articulo;
+                // Paso 4: Sumar el tiempo estimado de preparación del ArticuloManufacturado
+                tiempoTotalEspera += articuloManufacturado.getTiempoEstimadoMinutos() * detalleDto.getCantidad();
                 for (ArticuloManufacturadoDetalle detalle : ((ArticuloManufacturado) articulo).getArticuloManufacturadoDetalles()) {
                     insumosNecesarios.merge(detalle.getArticuloInsumo().getId(), detalle.getCantidad() * detalleDto.getCantidad(), Integer::sum);
                 }
@@ -167,7 +170,6 @@ private CompraProductoDto convertToDto(Articulo articulo) {
 
 
         Pedido pedido = new Pedido();
-        // Set other properties...
         pedido.setFechaPedido(LocalDate.now());
         pedido.setHora(LocalTime.now());
         pedido.setTotal(compraPedidoDto.getTotal());
@@ -210,7 +212,7 @@ private CompraProductoDto convertToDto(Articulo articulo) {
         pedido.setEstado(Estado.PENDIENTE);
         pedidoRepository.save(pedido);
         CompraPedidoDto pedidoDto = modelMapper.map(pedido, CompraPedidoDto.class);
-
+        pedidoDto.setTiempoEspera(tiempoTotalEspera);
         return pedidoDto;
     } catch (Exception e) {
         throw new Exception(e.getMessage());
