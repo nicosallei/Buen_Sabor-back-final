@@ -6,9 +6,11 @@ import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.dto.usuario.UsuarioDto;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.errores.ApiError;
 import NetDevops.BuenSabor.service.impl.UsuarioService;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,8 @@ public class UsuarioController {
         try {
             return ResponseEntity.ok().body(usuarioService.crearUsuarioCliente(usuarioCliente));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
 
@@ -36,7 +39,8 @@ public class UsuarioController {
         try {
             return ResponseEntity.ok().body(usuarioService.loginCliente(username, password));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
 
@@ -45,7 +49,8 @@ public class UsuarioController {
         try {
             return ResponseEntity.ok().body(usuarioService.crearUsuarioEmpleado(usuarioEmpleado));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
     @GetMapping("/empleado/login")
@@ -53,16 +58,18 @@ public class UsuarioController {
         try {
             return ResponseEntity.ok().body(usuarioService.loginEmpleado(username, password));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDto> login(@RequestBody UsuarioDto userDto) {
+    public ResponseEntity<?> login(@RequestBody UsuarioDto userDto) {
         try {
             UserResponseDto userResponse = usuarioService.login(userDto.getUsername(), userDto.getPassword());
             return ResponseEntity.ok(userResponse);
-        } catch (InvalidCredentialsException e) {
-            return ResponseEntity.status(401).build();
+        } catch (Exception e) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
 
@@ -72,7 +79,8 @@ public class UsuarioController {
             UsuarioCliente usuario = usuarioService.registrarUsuario(registroDto);
             return ResponseEntity.ok(usuario);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
 
@@ -83,7 +91,8 @@ public class UsuarioController {
             UsuarioEmpleado usuario = usuarioService.registrarEmpleado(registroDtoEmpleado);
             return ResponseEntity.ok(usuario);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
     }
 
