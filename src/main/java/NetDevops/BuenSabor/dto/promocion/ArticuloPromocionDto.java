@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +23,16 @@ public class ArticuloPromocionDto extends BaseDto {
     protected String codigo;
     protected UnidadMedida unidadMedida;
 
+    public void setImagenesConRutaModificada(Set<ImagenArticulo> imagenesOriginales) {
+        this.imagenes = imagenesOriginales.stream()
+                .map(imagen -> {
+                    String urlModificada = imagen.getUrl().replace("src\\main\\resources\\images\\", "");
+                    ImagenArticulo imagenModificada = new ImagenArticulo();
+                    imagenModificada.setUrl(urlModificada);
+                    imagenModificada.setArticulo(imagen.getArticulo());
+                    imagenModificada.setId(imagen.getId());
+                    return imagenModificada;
+                })
+                .collect(Collectors.toSet());
+    }
 }

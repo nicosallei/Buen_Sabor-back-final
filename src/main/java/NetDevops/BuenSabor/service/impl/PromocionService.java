@@ -99,7 +99,7 @@ public class PromocionService implements IPromocionService {
         dto.setPrecioVenta(articuloManufacturado.getPrecioVenta());
         dto.setTiempoEstimadoMinutos(articuloManufacturado.getTiempoEstimadoMinutos());
         dto.setPreparacion(articuloManufacturado.getPreparacion());
-        dto.setImagenes(articuloManufacturado.getImagenes());
+        dto.setImagenesConRutaModificada(articuloManufacturado.getImagenes());
         dto.setCodigo(articuloManufacturado.getCodigo());
         dto.setUnidadMedida(articuloManufacturado.getUnidadMedida());
         return dto;
@@ -114,6 +114,7 @@ public class PromocionService implements IPromocionService {
         dto.setImagenPromocion(promocionDetalle.getImagenPromocion());
         return dto;
     }
+
 
 
     @Override
