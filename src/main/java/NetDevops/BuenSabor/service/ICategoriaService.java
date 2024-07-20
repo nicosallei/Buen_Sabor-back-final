@@ -13,7 +13,7 @@ public interface ICategoriaService {
     public Categoria cargar(Categoria categoria) throws Exception;
     public Categoria actualizarCategoriaPadre(Long id, Categoria categoria) throws Exception;
     public Set<Categoria> lista()throws Exception;
-    public Categoria buscar(Long id)throws Exception;
+    public CategoriaDto buscar(Long id)throws Exception;
     public boolean eliminar(Long id)throws Exception;
     public boolean eliminarSubCategoria(Long idCategoria, Long idSubCategoria) throws Exception;
     public Set<SubCategoriaListaDto> obtenerSubCategorias(Long idCategoriaPadre) throws Exception;

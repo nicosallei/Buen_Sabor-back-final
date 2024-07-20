@@ -43,8 +43,8 @@ public class CategoriaControllador {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/")
 
+    @PostMapping("/")
     public ResponseEntity<?> cargar(@RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.cargar(categoria));

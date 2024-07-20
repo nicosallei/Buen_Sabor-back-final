@@ -98,12 +98,16 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
     }
 
     @Override
-    public Categoria buscar(Long id) throws Exception {
+    public CategoriaDto buscar(Long id) throws Exception {
         try {
             if (!categoriaRepository.existsByIdAndEliminadoFalse(id)) {
                 throw new Exception("No existe una categoria con ese id");
             }
-            return categoriaRepository.findByIdAndEliminadoFalse(id);
+            Categoria categoria= categoriaRepository.findByIdAndEliminadoFalse(id);
+            CategoriaDto dto = new CategoriaDto();
+            dto.setId(categoria.getId());
+            dto.setDenominacion(categoria.getDenominacion());
+            return dto;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -653,5 +657,7 @@ public Set<CategoriaDto> traerTodo2(Long empresaId) throws Exception {
             throw new Exception("Error al obtener las categorías padres: " + e.getMessage(), e);
         }
     }
+
+
 
 }
