@@ -55,7 +55,7 @@ public class UsuarioService implements IUsuarioService {
             Cliente cliente = clienteRepository.findByUsuarioCliente_Id(usuario.getId());
             UserResponseDto userResponse = new UserResponseDto();
             userResponse.setUsername(usuario.getUsername());
-            userResponse.setRole(cliente.getRol());
+            userResponse.setRol(cliente.getRol());
             userResponse.setIdUsuario(cliente.getId());
 
             return userResponse;
@@ -83,8 +83,10 @@ public class UsuarioService implements IUsuarioService {
             Empleado empleado = empleadoRepository.findByUsuarioEmpleado_Id(usuario.getId());
             UserResponseDto userResponse = new UserResponseDto();
             userResponse.setUsername(usuario.getUsername());
-            userResponse.setRole(empleado.getRol());
+            userResponse.setRol(empleado.getRol());
             userResponse.setIdUsuario(empleado.getId());
+            userResponse.setIdSucursal(empleado.getSucursal().getId());
+            userResponse.setIdEmpresa(empleado.getSucursal().getEmpresa().getId());
 
             return userResponse;
         } else {
@@ -100,8 +102,9 @@ public class UsuarioService implements IUsuarioService {
         Cliente cliente = clienteRepository.findByUsuarioCliente_Id(usuarioCliente.getId());
         UserResponseDto userResponse = new UserResponseDto();
         userResponse.setUsername(usuarioCliente.getUsername());
-        userResponse.setRole(cliente.getRol());
+        userResponse.setRol(cliente.getRol());
         userResponse.setIdUsuario(cliente.getId());
+        userResponse.setIdCliente(cliente.getId());
 
         return userResponse;
     }
@@ -112,7 +115,7 @@ public class UsuarioService implements IUsuarioService {
         Empleado empleado = empleadoRepository.findByUsuarioEmpleado_Id(usuarioEmpleado.getId());
         UserResponseDto userResponse = new UserResponseDto();
         userResponse.setUsername(usuarioEmpleado.getUsername());
-        userResponse.setRole(empleado.getRol());
+        userResponse.setRol(empleado.getRol());
         userResponse.setIdUsuario(empleado.getId());
 
         return userResponse;

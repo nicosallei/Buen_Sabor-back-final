@@ -10,6 +10,9 @@ import lombok.*;
 @Getter
 public class UserResponseDto  {
     private String username;
-    private Rol role;
+    private Rol rol;
     private Long idUsuario;
+    private long idSucursal;
+    private long idEmpresa;
+    private long idCliente;
 }
