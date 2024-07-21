@@ -13,4 +13,5 @@ public interface IPedidoService {
     public boolean eliminarPedido(Long id) throws Exception;
     public List<PedidoDto> traerPedidos(Long sucursalId) throws Exception;
     public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception;
+    public List<PedidoDto> traerPedidosPorClienteId(Long clienteId) throws Exception;
 }

@@ -20,4 +20,6 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Long>{
 
     @Query("SELECT EXTRACT(MONTH FROM p.fechaPedido) as month, EXTRACT(YEAR FROM p.fechaPedido) as year, SUM(p.total) as total FROM Pedido p WHERE p.fechaPedido BETWEEN :startDate AND :endDate AND p.sucursal.id = :sucursalId GROUP BY month, year")
 List<Object[]> sumTotalesPedidosPorRangoDeMeses(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("sucursalId") Long sucursalId);
+
+    List<Pedido> findByCliente_Id(Long clienteId);
 }

@@ -78,6 +78,18 @@ private IAriticuloInsumoRepository articuloRepository;
         }
     }
 
+    @Override
+    public List<PedidoDto> traerPedidosPorClienteId(Long clienteId) throws Exception {
+        try {
+            List<Pedido> pedidosCliente = pedidoRepository.findByCliente_Id(clienteId);
+            return pedidosCliente.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
 @Override
 public List<PedidoDto> traerPedidos(Long sucursalId) throws Exception{
     try {
