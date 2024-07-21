@@ -170,8 +170,7 @@ public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{
 public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Exception {
         try {
             Pedido pedido = pedidoRepository.findById(id).orElse(null);
-            //Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
-            Cliente cliente = clienteRepository.findById(7L).orElse(null);
+            Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
             if (pedido == null) {
                 throw new Exception("Pedido no encontrado");
             }
