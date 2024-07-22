@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,4 +25,5 @@ List<Object[]> sumTotalesPedidosPorRangoDeMeses(@Param("startDate") LocalDate st
 
     List<Pedido> findByCliente_Id(Long clienteId);
     List<Pedido> findBySucursalIdAndEstado(Long sucursalId, Estado estado);
+    List<Pedido> findByFechaPedidoBetweenAndSucursal_Id(LocalDate fechaInicio, LocalDate fechaFin, Long sucursalId);
 }

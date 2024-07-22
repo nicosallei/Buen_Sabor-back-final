@@ -48,6 +48,12 @@ public class EstadisticasController {
         return ResponseEntity.ok(articulos);
     }
 
-
+    @GetMapping("/articulos-manufacturados/vendidos-por-sucursal")
+    public List<ArticuloManufacturadoVendidoDto> obtenerArticulosManufacturadosPorRangoFechaYSucursal(
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam("sucursalId") Long sucursalId) {
+        return estadisticaService.obtenerArticulosManufacturadosPorRangoFecha(fechaInicio, fechaFin, sucursalId);
+    }
 
 }

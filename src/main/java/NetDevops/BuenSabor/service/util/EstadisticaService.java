@@ -3,6 +3,9 @@ package NetDevops.BuenSabor.service.util;
 
 import NetDevops.BuenSabor.dto.articuloInsumo.InsumoStockDto;
 import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoVendidoDto;
+import NetDevops.BuenSabor.entities.ArticuloManufacturado;
+import NetDevops.BuenSabor.entities.Pedido;
+import NetDevops.BuenSabor.entities.PedidoDetalle;
 import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.repository.IPedidoDetalleReposiroty;
 import NetDevops.BuenSabor.repository.IPedidoRepository;
@@ -11,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -64,6 +65,43 @@ public class EstadisticaService {
         return pedidoDetalleRepository.findArticulosManufacturadosVendidosPorSucursal(sucursalId);
     }
 
+//    public Map<String, ArticuloManufacturadoVendidoDto> obtenerArticulosManufacturadosPorRangoFecha(LocalDate fechaInicio, LocalDate fechaFin, Long sucursalId) {
+//       List<Pedido> pedidos = pedidoRepository.findByFechaPedidoBetweenAndSucursal_Id( fechaInicio,fechaFin,sucursalId);
+//        Map<String, ArticuloManufacturadoVendidoDto> articulosConCantidad = new HashMap<>();
+//
+//        for (Pedido pedido : pedidos) {
+//            for (PedidoDetalle detalle : pedido.getPedidoDetalle()) {
+//                if (detalle.getArticulo() instanceof ArticuloManufacturado) {
+//                    ArticuloManufacturado articulo = (ArticuloManufacturado) detalle.getArticulo();
+//                    String denominacion = articulo.getDenominacion();
+//                    ArticuloManufacturadoVendidoDto dto = articulosConCantidad.getOrDefault(denominacion, new ArticuloManufacturadoVendidoDto(denominacion, 0L));
+//                    dto.setCantidadVendida(dto.getCantidadVendida() + detalle.getCantidad());
+//                    articulosConCantidad.put(denominacion, dto);
+//                }
+//            }
+//        }
+//
+//        return articulosConCantidad;
+//    }
+
+   public List<ArticuloManufacturadoVendidoDto> obtenerArticulosManufacturadosPorRangoFecha(LocalDate fechaInicio, LocalDate fechaFin, Long sucursalId) {
+    List<Pedido> pedidos = pedidoRepository.findByFechaPedidoBetweenAndSucursal_Id( fechaInicio,fechaFin,sucursalId);
+    Map<String, ArticuloManufacturadoVendidoDto> articulosConCantidad = new HashMap<>();
+
+    for (Pedido pedido : pedidos) {
+        for (PedidoDetalle detalle : pedido.getPedidoDetalle()) {
+            if (detalle.getArticulo() instanceof ArticuloManufacturado) {
+                ArticuloManufacturado articulo = (ArticuloManufacturado) detalle.getArticulo();
+                String denominacion = articulo.getDenominacion();
+                ArticuloManufacturadoVendidoDto dto = articulosConCantidad.getOrDefault(denominacion, new ArticuloManufacturadoVendidoDto(denominacion, 0L));
+                dto.setCantidadVendida(dto.getCantidadVendida() + detalle.getCantidad());
+                articulosConCantidad.put(denominacion, dto);
+            }
+        }
+    }
+
+    return new ArrayList<>(articulosConCantidad.values());
+}
 
 
 }
