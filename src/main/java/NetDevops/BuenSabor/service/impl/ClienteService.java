@@ -66,6 +66,7 @@ public class ClienteService implements IClienteService {
             throw new Exception(e.getMessage());
         }
     }
+
     @Override
     public Cliente buscarPorEmail(String email) {
         return clienteRepository.findByEmail(email);

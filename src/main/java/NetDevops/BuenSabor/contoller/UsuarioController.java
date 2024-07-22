@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.dto.usuario.RegistroDto;
 import NetDevops.BuenSabor.dto.usuario.RegistroDtoEmpleado;
 import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.dto.usuario.UsuarioDto;
+import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import NetDevops.BuenSabor.errores.ApiError;
@@ -28,6 +29,18 @@ public class UsuarioController {
     public ResponseEntity<?> crearCliente(@RequestBody UsuarioCliente usuarioCliente) {
         try {
             return ResponseEntity.ok().body(usuarioService.crearUsuarioCliente(usuarioCliente));
+        } catch (Exception e) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+    }
+
+    @PutMapping("/cliente/actualizarPassword/{clienteId}")
+    public ResponseEntity<?> actualizarPasswordCliente(@PathVariable Long clienteId, @RequestBody String nuevaPassword) {
+        try {
+
+            usuarioService.actualizarPasswordCliente(clienteId, nuevaPassword);
+            return ResponseEntity.ok().body("Contraseña actualizada con éxito");
         } catch (Exception e) {
             ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());

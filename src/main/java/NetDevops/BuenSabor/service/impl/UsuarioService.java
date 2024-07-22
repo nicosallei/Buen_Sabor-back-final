@@ -198,5 +198,18 @@ public class UsuarioService implements IUsuarioService {
     return savedUsuario;
 }
 
+    public boolean actualizarPasswordCliente(Long clienteId, String nuevaPassword) throws Exception {
+
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new Exception("Cliente no encontrado con id: " + clienteId));
+        Long usuarioId = cliente.getUsuarioCliente().getId();
+        UsuarioCliente usuario = usuarioClienteRepository.findById(usuarioId)
+                .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + usuarioId));
+        String hashedPassword = seguridadService.hashWithSHA256(nuevaPassword);
+        usuario.setPassword(hashedPassword);
+        usuarioClienteRepository.save(usuario);
+        return true;
+    }
+
 
 }
