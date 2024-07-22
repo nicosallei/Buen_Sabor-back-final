@@ -3,6 +3,7 @@ package NetDevops.BuenSabor.service.util;
 
 import NetDevops.BuenSabor.dto.articuloInsumo.InsumoStockDto;
 import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoVendidoDto;
+import NetDevops.BuenSabor.dto.cliente.ClientePedidosDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.entities.Pedido;
 import NetDevops.BuenSabor.entities.PedidoDetalle;
@@ -103,5 +104,8 @@ public class EstadisticaService {
     return new ArrayList<>(articulosConCantidad.values());
 }
 
+    public List<ClientePedidosDto> obtenerPedidosPorClienteYRango(LocalDate fechaInicio, LocalDate fechaFin, Long sucursalId) {
+        return pedidoRepository.contarPedidosPorClienteEnRangoYEstado(fechaInicio, fechaFin, sucursalId);
+    }
 
 }

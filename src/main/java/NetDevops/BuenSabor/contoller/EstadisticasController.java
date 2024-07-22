@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.contoller;
 
 import NetDevops.BuenSabor.dto.articuloInsumo.InsumoStockDto;
 import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoVendidoDto;
+import NetDevops.BuenSabor.dto.cliente.ClientePedidosDto;
 import NetDevops.BuenSabor.service.util.EstadisticaService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -54,6 +55,14 @@ public class EstadisticasController {
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
             @RequestParam("sucursalId") Long sucursalId) {
         return estadisticaService.obtenerArticulosManufacturadosPorRangoFecha(fechaInicio, fechaFin, sucursalId);
+    }
+
+    @GetMapping("/pedidos-por-cliente-y-rango")
+    public List<ClientePedidosDto> obtenerPedidosPorClienteYRango(
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam("sucursalId") Long sucursalId) {
+        return estadisticaService.obtenerPedidosPorClienteYRango(fechaInicio, fechaFin, sucursalId);
     }
 
 }
