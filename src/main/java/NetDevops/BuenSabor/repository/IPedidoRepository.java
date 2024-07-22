@@ -37,4 +37,6 @@ List<Object[]> sumTotalesPedidosPorRangoDeMeses(@Param("startDate") LocalDate st
 List<ClientePedidosDto> contarPedidosPorClienteEnRangoYEstado(@Param("fechaInicio") LocalDate fechaInicio,
                                                               @Param("fechaFin") LocalDate fechaFin,
                                                               @Param("sucursalId") Long sucursalId);
+    List<Pedido> findByFechaPedidoBetweenAndSucursal_IdAndEstado(LocalDate fechaInicio, LocalDate fechaFin, Long sucursalId, Estado estado);
+
 }

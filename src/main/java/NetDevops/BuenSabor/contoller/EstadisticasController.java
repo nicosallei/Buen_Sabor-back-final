@@ -65,4 +65,12 @@ public class EstadisticasController {
         return estadisticaService.obtenerPedidosPorClienteYRango(fechaInicio, fechaFin, sucursalId);
     }
 
+    @GetMapping("/ganancias-por-rango-de-meses")
+    public Map<YearMonth, Double> getGananciasPorRangoDeMeses(
+            @RequestParam("startMonth") @DateTimeFormat(pattern = "yyyy-MM") YearMonth startMonth,
+            @RequestParam("endMonth") @DateTimeFormat(pattern = "yyyy-MM") YearMonth endMonth,
+            @RequestParam("sucursalId") Long sucursalId) {
+        return estadisticaService.getGananciasPorRangoDeMeses(startMonth, endMonth, sucursalId);
+    }
+
 }
