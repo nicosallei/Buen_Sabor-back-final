@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.repository;
 
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Empleado;
+import NetDevops.BuenSabor.enums.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,5 @@ public interface IEmpleadoRepository extends JpaRepository<Empleado, Long> {
     List<Empleado> findBySucursalId(Long sucursalId);
     Empleado findByEmail(String email);
     boolean existsByEmail(String email);
+    Long countBySucursalIdAndRolAndEliminadoFalse(Long sucursalId, Rol rol);
 }

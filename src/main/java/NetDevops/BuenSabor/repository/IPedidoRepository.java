@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.repository;
 
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Pedido;
+import NetDevops.BuenSabor.enums.Estado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,5 @@ public interface IPedidoRepository extends JpaRepository<Pedido, Long>{
 List<Object[]> sumTotalesPedidosPorRangoDeMeses(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("sucursalId") Long sucursalId);
 
     List<Pedido> findByCliente_Id(Long clienteId);
+    List<Pedido> findBySucursalIdAndEstado(Long sucursalId, Estado estado);
 }

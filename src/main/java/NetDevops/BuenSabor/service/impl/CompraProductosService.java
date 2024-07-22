@@ -5,11 +5,13 @@ import NetDevops.BuenSabor.dto.compraProducto.CompraProductoDto;
 import NetDevops.BuenSabor.dto.compraProducto.PedidoDetalleDto;
 import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.enums.Estado;
+import NetDevops.BuenSabor.enums.Rol;
 import NetDevops.BuenSabor.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -32,6 +34,8 @@ public class CompraProductosService {
     private ICategoriaRepository categoriaRepository;
     @Autowired
     private IClienteRepository clienteRepository;
+    @Autowired
+    private IEmpleadoRepository empleadoRepository;
 
   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
     // Obtener los artículos directamente asignados a la categoría padre
@@ -142,6 +146,9 @@ private CompraProductoDto convertToDto(Articulo articulo) {
 
         Map<Long, Integer> insumosNecesarios = new HashMap<>();
         int tiempoTotalEspera = 0;
+
+        Long cantidadCocineros = empleadoRepository.countBySucursalIdAndRolAndEliminadoFalse(compraPedidoDto.getSucursalId(), Rol.EMPLEADO_COCINA);
+        int timepoPreparacionCocina = calcularTiempoEsperaArticulosManufacturados(compraPedidoDto.getSucursalId()) / cantidadCocineros.intValue();
         // Calcular la cantidad total necesaria de cada insumo
         for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {
             Articulo articulo = articuloRepository.findById(detalleDto.getProducto().getId())
@@ -158,6 +165,7 @@ private CompraProductoDto convertToDto(Articulo articulo) {
                 }
             }
         }
+        tiempoTotalEspera += timepoPreparacionCocina;
 
         // Verificar que hay suficiente stock para cada insumo
         for (Map.Entry<Long, Integer> entry : insumosNecesarios.entrySet()) {
@@ -218,6 +226,23 @@ private CompraProductoDto convertToDto(Articulo articulo) {
         throw new Exception(e.getMessage());
     }
 }
+
+
+    public int calcularTiempoEsperaArticulosManufacturados(Long sucursalId) {
+        List<Pedido> pedidosEnPreparacion = pedidoRepository.findBySucursalIdAndEstado(sucursalId, Estado.EN_PREPARACION);
+        int tiempoTotalEspera = 0;
+
+        for (Pedido pedido : pedidosEnPreparacion) {
+            for (PedidoDetalle detalle : pedido.getPedidoDetalle()) {
+                if (detalle.getArticulo() instanceof ArticuloManufacturado) {
+                    ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) detalle.getArticulo();
+                    tiempoTotalEspera += articuloManufacturado.getTiempoEstimadoMinutos() * detalle.getCantidad();
+                }
+            }
+        }
+
+        return tiempoTotalEspera;
+    }
 
 
 }
