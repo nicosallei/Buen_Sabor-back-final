@@ -6,5 +6,6 @@ public enum Estado {
     EN_PREPARACION,
     ENVIADO,
     ENTREGADO,
-    CANCELADO
+    CANCELADO,
+    LISTO_PARA_ENTREGAR;
 }
