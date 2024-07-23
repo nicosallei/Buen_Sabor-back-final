@@ -213,8 +213,10 @@ public class UsuarioService implements IUsuarioService {
     }
 
     public boolean actualizarPasswordEmpleado(Long empleadoId, String nuevaPassword) throws Exception {
-    UsuarioEmpleado usuario = usuarioEmpleadoRepository.findById(empleadoId)
+    Empleado empleado = empleadoRepository.findById(empleadoId)
             .orElseThrow(() -> new Exception("Empleado no encontrado con id: " + empleadoId));
+    Long usuarioId = empleado.getUsuarioEmpleado().getId();
+    UsuarioEmpleado usuario = usuarioEmpleadoRepository.findById(usuarioId).orElseThrow(() -> new Exception("Usuario no encontrado con id: " + usuarioId));
     String hashedPassword = seguridadService.hashWithSHA256(nuevaPassword);
     usuario.setPassword(hashedPassword);
     usuarioEmpleadoRepository.save(usuario);
