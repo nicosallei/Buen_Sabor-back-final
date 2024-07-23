@@ -9,6 +9,6 @@ public enum Rol {
     EMPLEADO_REPARTIDOR,
     EMPLEADO_CAJA,
     ADMIN_SUCURSAL,
-    ADMIN_EMPRESA;
+
 
 }

@@ -6,6 +6,7 @@ import NetDevops.BuenSabor.dto.pedido.PedidoDto;
 import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.enums.Rol;
+import NetDevops.BuenSabor.enums.TipoEnvio;
 import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.IClienteRepository;
@@ -116,6 +117,13 @@ private PedidoDto convertToDto(Pedido pedido) {
     pedidoDto.setPedidoDetalleDto(pedido.getPedidoDetalle().stream()
         .map(this::convertDetalleToDto)
         .collect(Collectors.toList()));
+    if(pedido.getTipoEnvio()== TipoEnvio.DELIVERY) {
+        pedidoDto.getDomicilioDto().setCp(pedido.getDomicilio().getCp());
+        pedidoDto.getDomicilioDto().setCalle(pedido.getDomicilio().getCalle());
+        pedidoDto.getDomicilioDto().setProvincia(pedido.getDomicilio().getLocalidad().getProvincia().getNombre());
+        pedidoDto.getDomicilioDto().setLocalidad(pedido.getDomicilio().getLocalidad().getNombre());
+        pedidoDto.getDomicilioDto().setNumero(pedido.getDomicilio().getNumero());
+    }
     return pedidoDto;
 }
 

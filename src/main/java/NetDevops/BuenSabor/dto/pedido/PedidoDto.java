@@ -26,7 +26,7 @@ public class PedidoDto extends BaseDto {
     private LocalDate fechaPedido;
     private String preferenceMPId;
     private List<PedidoDetalleDto> pedidoDetalleDto;
-    private Domicilio domicilio;
+    private DomicilioDto domicilioDto = new DomicilioDto();
 
 
 }

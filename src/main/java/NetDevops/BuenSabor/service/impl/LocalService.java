@@ -436,7 +436,7 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
     dto.setId(articulo.getId());
     dto.setCodigo(articulo.getCodigo());
     dto.setDenominacion(articulo.getDenominacion());
-
+    dto.setPreparacion(articulo.getPreparacion());
 
     dto.setEliminado(articulo.isEliminado());
     if (!articulo.getImagenes().isEmpty()) {

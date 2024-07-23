@@ -7,5 +7,5 @@ public enum Estado {
     ENVIADO,
     ENTREGADO,
     CANCELADO,
-    LISTO_PARA_ENTREGAR;
+    LISTO_PARA_ENTREGAR
 }
