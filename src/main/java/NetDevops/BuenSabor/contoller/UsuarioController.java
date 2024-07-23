@@ -33,10 +33,10 @@ public class UsuarioController {
     }
 
     @PutMapping("/cliente/actualizarPassword/{clienteId}")
-    public ResponseEntity<?> actualizarPasswordCliente(@PathVariable Long clienteId, @RequestBody String nuevaPassword) {
+    public ResponseEntity<?> actualizarPasswordCliente(@PathVariable Long clienteId, @RequestBody CambioPasswordDto cambioPasswordDto) {
         try {
 
-            usuarioService.actualizarPasswordCliente(clienteId, nuevaPassword);
+            usuarioService.actualizarPasswordCliente(clienteId, cambioPasswordDto.getNuevaPassword());
             return ResponseEntity.ok().body("Contraseña actualizada con éxito");
         } catch (Exception e) {
             ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
