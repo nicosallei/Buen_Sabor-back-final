@@ -15,4 +15,5 @@ public class UserResponseDto  {
     private long idSucursal;
     private long idEmpresa;
     private long idCliente;
+    private Long idEmpleado;
 }

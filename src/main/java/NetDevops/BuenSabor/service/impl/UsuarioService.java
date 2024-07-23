@@ -117,6 +117,7 @@ public class UsuarioService implements IUsuarioService {
         userResponse.setUsername(usuarioEmpleado.getUsername());
         userResponse.setRol(empleado.getRol());
         userResponse.setIdUsuario(empleado.getId());
+        userResponse.setIdEmpleado(empleado.getId());
 
         return userResponse;
     }
@@ -211,5 +212,68 @@ public class UsuarioService implements IUsuarioService {
         return true;
     }
 
+    public boolean actualizarPasswordEmpleado(Long empleadoId, String nuevaPassword) throws Exception {
+    UsuarioEmpleado usuario = usuarioEmpleadoRepository.findById(empleadoId)
+            .orElseThrow(() -> new Exception("Empleado no encontrado con id: " + empleadoId));
+    String hashedPassword = seguridadService.hashWithSHA256(nuevaPassword);
+    usuario.setPassword(hashedPassword);
+    usuarioEmpleadoRepository.save(usuario);
+    return true;
+}
+
+
+public boolean cambiarPasswordCliente(String username, String passwordActual, String nuevaPassword) throws Exception {
+    // Buscar el usuario cliente por username
+    UsuarioCliente usuarioCliente = usuarioClienteRepository.findByUsername(username);
+    if (usuarioCliente == null) {
+        throw new Exception("Usuario no encontrado con username: " + username);
+    }
+
+    // Hashear la contraseña actual para comparación
+    String hashedPasswordActual = seguridadService.hashWithSHA256(passwordActual);
+
+    // Verificar si la contraseña actual es correcta
+    if (!usuarioCliente.getPassword().equals(hashedPasswordActual)) {
+        throw new InvalidCredentialsException("La contraseña actual es incorrecta");
+    }
+
+    // Hashear la nueva contraseña
+    String hashedNuevaPassword = seguridadService.hashWithSHA256(nuevaPassword);
+
+    // Actualizar la contraseña del usuario
+    usuarioCliente.setPassword(hashedNuevaPassword);
+
+    // Guardar el usuario actualizado en la base de datos
+    usuarioClienteRepository.save(usuarioCliente);
+
+    return true;
+}
+
+public boolean cambiarPasswordEmpleado(String username, String passwordActual, String nuevaPassword) throws Exception {
+    // Buscar el usuario empleado por username
+    UsuarioEmpleado usuarioEmpleado = usuarioEmpleadoRepository.findByUsername(username);
+    if (usuarioEmpleado == null) {
+        throw new Exception("Empleado no encontrado con username: " + username);
+    }
+
+    // Hashear la contraseña actual para comparación
+    String hashedPasswordActual = seguridadService.hashWithSHA256(passwordActual);
+
+    // Verificar si la contraseña actual es correcta
+    if (!usuarioEmpleado.getPassword().equals(hashedPasswordActual)) {
+        throw new InvalidCredentialsException("La contraseña actual es incorrecta");
+    }
+
+    // Hashear la nueva contraseña
+    String hashedNuevaPassword = seguridadService.hashWithSHA256(nuevaPassword);
+
+    // Actualizar la contraseña del usuario
+    usuarioEmpleado.setPassword(hashedNuevaPassword);
+
+    // Guardar el usuario actualizado en la base de datos
+    usuarioEmpleadoRepository.save(usuarioEmpleado);
+
+    return true;
+}
 
 }

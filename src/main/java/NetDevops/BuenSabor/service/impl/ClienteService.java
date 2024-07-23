@@ -71,4 +71,8 @@ public class ClienteService implements IClienteService {
     public Cliente buscarPorEmail(String email) {
         return clienteRepository.findByEmail(email);
     }
+
+
+
+
 }

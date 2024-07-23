@@ -1,9 +1,6 @@
 package NetDevops.BuenSabor.contoller;
 
-import NetDevops.BuenSabor.dto.usuario.RegistroDto;
-import NetDevops.BuenSabor.dto.usuario.RegistroDtoEmpleado;
-import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
-import NetDevops.BuenSabor.dto.usuario.UsuarioDto;
+import NetDevops.BuenSabor.dto.usuario.*;
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
@@ -103,6 +100,40 @@ public class UsuarioController {
         try {
             UsuarioEmpleado usuario = usuarioService.registrarEmpleado(registroDtoEmpleado);
             return ResponseEntity.ok(usuario);
+        } catch (Exception e) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+    }
+
+
+    @PostMapping("/cambiar-password-empleado")
+    public ResponseEntity<?> cambiarPasswordEmpleado(@RequestBody CambioPasswordDto cambioPasswordDto) {
+        try {
+            boolean resultado = usuarioService.cambiarPasswordEmpleado(cambioPasswordDto.getUsername(), cambioPasswordDto.getPasswordActual(), cambioPasswordDto.getNuevaPassword());
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+    }
+
+    @PostMapping("/actualizar-password-empleado")
+    public ResponseEntity<?> actualizarPasswordEmpleado(@RequestBody CambioPasswordDto cambioPasswordDto) {
+        try {
+            boolean resultado = usuarioService.actualizarPasswordEmpleado(cambioPasswordDto.getId(), cambioPasswordDto.getNuevaPassword());
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+    }
+
+    @PostMapping("/cambiar-password-cliente")
+    public ResponseEntity<?> cambiarPasswordCliente(@RequestBody CambioPasswordDto cambioPasswordDto) {
+        try {
+            boolean resultado = usuarioService.cambiarPasswordCliente(cambioPasswordDto.getUsername(), cambioPasswordDto.getPasswordActual(), cambioPasswordDto.getNuevaPassword());
+            return ResponseEntity.ok(resultado);
         } catch (Exception e) {
             ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());
