@@ -79,8 +79,8 @@ public class PdfService {
                 .add("Información de la Sucursal:\n")
                 .add("Nombre: " + sucursal.getNombre() + "\n")
                 .add("Dirección: " + sucursalDomicilio.getCalle() + " " + sucursalDomicilio.getNumero() + "\n")
-                .add("Departamento: " + sucursalLocalidad.getNombre() + ", " + sucursalProvincia.getNombre() + "\n")
-                .add("Provincia: " + sucursalLocalidad.getProvincia().getNombre() + "\n")
+                .add("Ubicacion: " + sucursalLocalidad.getNombre() + ", " + sucursalProvincia.getNombre() +", "+sucursalProvincia.getPais().getNombre() + "\n")
+
                 .setTextAlignment(TextAlignment.LEFT)
                 .setBorder(Border.NO_BORDER)
                 .setVerticalAlignment(VerticalAlignment.MIDDLE);
