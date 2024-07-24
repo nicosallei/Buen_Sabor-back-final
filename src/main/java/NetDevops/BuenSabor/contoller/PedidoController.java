@@ -113,7 +113,7 @@ public ResponseEntity<?> cambiarEstadoPedido(@PathVariable Long id, @RequestBody
         Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + pedido.getCliente().getId()));
 
-        byte[] pdfContent = pdfService.createPdfPedido(pedido, cliente);
+        byte[] pdfContent = pdfService.createPdfFactura(pedido, cliente);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=pedido_" + pedidoId + ".pdf");

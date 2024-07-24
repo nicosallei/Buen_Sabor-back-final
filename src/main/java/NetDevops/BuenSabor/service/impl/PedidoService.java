@@ -194,7 +194,7 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
             }else if(nuevoEstado == Estado.ENTREGADO){
 
                 // Generate PDF
-                byte[] pdf = pdfService.createPdfPedido(pedido,cliente);
+                byte[] pdf = pdfService.createPdfFactura(pedido,cliente);
                 // Send email
                 String to = cliente.getEmail(); // replace with the customer's email
                 String subject = "Pedido creado";
