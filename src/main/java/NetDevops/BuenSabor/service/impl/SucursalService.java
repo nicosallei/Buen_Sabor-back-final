@@ -65,7 +65,11 @@ public Sucursal save(Sucursal sucursal) throws Exception {
 @Override
 public Sucursal updateDto(Long id, SucursalDto sucursalDto) throws Exception {
     try {
+
         Sucursal sucursalExistente = sucursalRepository.findById(id).orElseThrow(() -> new Exception("No se encontró la sucursal con el id proporcionado"));
+        Localidad localidadActualizada = localidadRepository.findById(Long.valueOf(sucursalDto.getLocalidad())).orElseThrow(() -> new Exception("No se encontró la localidad con el id proporcionado"));
+        Provincia provincia = provinciaRepository.findById(Long.valueOf(sucursalDto.getProvincia())).orElseThrow(() -> new Exception("No se encontró la provincia con el id proporcionado"));
+        Pais pais = paisRepository.findById(Long.valueOf(sucursalDto.getPais())).orElseThrow(() -> new Exception("No se encontró el país con el id proporcionado"));
 
         // Verificar si existe otra sucursal con el mismo nombre pero diferente ID
         if(sucursalRepository.existsByNombreAndNotId(sucursalDto.getNombre(), id)){
@@ -77,6 +81,11 @@ public Sucursal updateDto(Long id, SucursalDto sucursalDto) throws Exception {
         // Aquí deberías actualizar otros campos relevantes de SucursalDto, excepto aquellos que implican relaciones con otras entidades
         sucursalExistente.setHoraApertura(sucursalDto.getHoraApertura());
         sucursalExistente.setHoraCierre(sucursalDto.getHoraCierre());
+
+
+       sucursalExistente.getDomicilio().getLocalidad().getProvincia().setPais(pais);
+        sucursalExistente.getDomicilio().getLocalidad().setProvincia(provincia);
+        sucursalExistente.getDomicilio().setLocalidad(localidadActualizada);
         sucursalExistente.getDomicilio().setNumero(Integer.valueOf(sucursalDto.getNumero()));
         sucursalExistente.getDomicilio().setCalle(sucursalDto.getCalle());
         sucursalExistente.getDomicilio().setCp(Integer.valueOf(sucursalDto.getCp()));
