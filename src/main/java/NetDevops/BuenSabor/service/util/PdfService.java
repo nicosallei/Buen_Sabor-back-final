@@ -38,7 +38,7 @@ public class PdfService {
         document.add(emptyParagraph);
 
         // Add logo/image if available
-        String logoPath = "src/main/resources/images/logo3.png"; // Replace with the actual path to your image
+        String logoPath = "src/main/resources/images/logo.png"; // Replace with the actual path to your image
         File logoFile = new File(logoPath);
         if (logoFile.exists()) {
             try {
@@ -163,7 +163,7 @@ public class PdfService {
         // Add the total amount and discount with styling
         Paragraph totals = new Paragraph()
                 .add("Descuento realizado: " + currencyFormat.format(descuento) + "\n")
-                .add("Total a pagar: " + currencyFormat.format(pedido.getTotal()))
+                .add("Total: " + currencyFormat.format(pedido.getTotal()))
                 .setTextAlignment(TextAlignment.RIGHT)
                 .setBold()
                 .setBackgroundColor(new DeviceRgb(255, 235, 235))
