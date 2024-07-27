@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.contoller;
 
 import NetDevops.BuenSabor.dto.usuario.*;
 import NetDevops.BuenSabor.entities.Cliente;
+import NetDevops.BuenSabor.entities.Empleado;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import NetDevops.BuenSabor.errores.ApiError;
@@ -95,7 +96,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/registro/usuario-empleado")
-    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> registrarEmpleado(@RequestBody RegistroDtoEmpleado registroDtoEmpleado) {
         try {
             UsuarioEmpleado usuario = usuarioService.registrarEmpleado(registroDtoEmpleado);
@@ -137,6 +138,20 @@ public class UsuarioController {
         } catch (Exception e) {
             ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+    }
+
+    @GetMapping("/google-login")
+    public ResponseEntity<?> buscarUsuarioPorEmail(@RequestParam String email) {
+        try {
+            UserResponseDto usuario = usuarioService.buscarUsuarioPorEmail(email);
+            if (usuario != null) {
+                return ResponseEntity.ok(usuario);
+            } else {
+                return ResponseEntity.status(404).body("Usuario no encontrado");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error interno del servidor");
         }
     }
 

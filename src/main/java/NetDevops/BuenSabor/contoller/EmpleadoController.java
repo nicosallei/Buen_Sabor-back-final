@@ -41,7 +41,7 @@ public class EmpleadoController {
         }
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Empleado empleado) {
         try {
             return ResponseEntity.ok().body(empleadoService.actualizarEmpleado(id,empleado));

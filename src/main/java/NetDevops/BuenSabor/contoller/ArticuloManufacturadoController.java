@@ -39,7 +39,7 @@ public class ArticuloManufacturadoController {
 
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> cargarArticuloManufacturado(@RequestBody ArticuloManufacturado articuloManufacturado) {
         try {
             return ResponseEntity.ok().body(articuloManufacturadoService.cargarArticuloManufacturado(articuloManufacturado));
@@ -49,7 +49,7 @@ public class ArticuloManufacturadoController {
         }
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizarArticuloManufacturado(@PathVariable Long id, @RequestBody ArticuloManufacturado articuloManufacturado) {
         try {
             return ResponseEntity.status(200).body(articuloManufacturadoService.actualizarArticuloManufacturado(id, articuloManufacturado));
@@ -59,7 +59,7 @@ public class ArticuloManufacturadoController {
         }
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> eliminarArticuloManufacturado(@PathVariable Long id) {
         try {
             return ResponseEntity.status(200).body(articuloManufacturadoService.eliminarArticuloManufacturado(id));
@@ -83,7 +83,7 @@ public class ArticuloManufacturadoController {
     //endregion
 
     @PostMapping("/reactivate/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             articuloManufacturadoService.reactivate(id);

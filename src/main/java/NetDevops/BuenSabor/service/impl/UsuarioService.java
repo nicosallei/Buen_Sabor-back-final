@@ -1,8 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.usuario.RegistroDto;
-import NetDevops.BuenSabor.dto.usuario.RegistroDtoEmpleado;
-import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
+import NetDevops.BuenSabor.dto.usuario.*;
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Empleado;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
@@ -277,5 +275,31 @@ public boolean cambiarPasswordEmpleado(String username, String passwordActual, S
 
     return true;
 }
+    public UserResponseDto buscarUsuarioPorEmail(String email) {
+        Cliente cliente = clienteRepository.findByEmail(email);
+        if (cliente != null) {
+            UserResponseDto usuarioDto = new UserResponseDto();
+            usuarioDto.setIdUsuario(cliente.getId());
+            usuarioDto.setUsername(cliente.getEmail());
+            usuarioDto.setRol(cliente.getRol());
+            usuarioDto.setIdCliente(cliente.getId());
+            return usuarioDto;
+
+        }
+
+        Empleado empleado = empleadoRepository.findByEmail(email);
+        if (empleado != null) {
+            UserResponseDto usuarioDto = new UserResponseDto();
+            usuarioDto.setIdUsuario(empleado.getId());
+            usuarioDto.setIdEmpleado(empleado.getId());
+            usuarioDto.setUsername(empleado.getEmail());
+            usuarioDto.setRol(empleado.getRol());
+            usuarioDto.setIdEmpresa(empleado.getSucursal().getEmpresa().getId());
+            usuarioDto.setIdSucursal(empleado.getSucursal().getId());
+            return usuarioDto;
+        }
+
+        return null; // Usuario no encontrado
+    }
 
 }

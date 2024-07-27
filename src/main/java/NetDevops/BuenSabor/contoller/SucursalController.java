@@ -45,7 +45,7 @@ public class SucursalController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> deleteById(@PathVariable Long id){
         try {
             return ResponseEntity.ok(sucursalService.delete(id));
@@ -64,7 +64,7 @@ public class SucursalController {
 //    }
 
     @PutMapping("/{id}")
-    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id,@RequestBody SucursalDto sucursalDto){
         try {
             return ResponseEntity.ok(sucursalService.updateDto(id, sucursalDto));
@@ -89,7 +89,7 @@ public class SucursalController {
         }
     }
     @PostMapping("/")
-    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> guardarSucursalDto(@RequestBody SucursalDto sucursalDto){
         try {
             return ResponseEntity.ok(sucursalService.guardarSucursalDto(sucursalDto));

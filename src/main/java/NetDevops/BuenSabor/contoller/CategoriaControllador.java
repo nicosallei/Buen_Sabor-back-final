@@ -53,7 +53,6 @@ public class CategoriaControllador {
         }
     }
     @PutMapping("/{id}")
-
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.Actualizar(id, categoria));
@@ -62,7 +61,6 @@ public class CategoriaControllador {
         }
     }
     @DeleteMapping("/{id}")
-
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         try {
             return ResponseEntity.ok().body(categoriaService.eliminar(id));
@@ -74,7 +72,6 @@ public class CategoriaControllador {
 
     //agrega una subcategoria a una categoria
     @PostMapping("/agregar/subcategoria/{id}")
-
     public ResponseEntity<?> crearSubCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.agregarSubCategoria(id, categoria));
@@ -95,7 +92,6 @@ public class CategoriaControllador {
 //    }
 
    @PostMapping("/agregar/articulo")
-
 public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCategoria, @RequestParam("idArticulo") Long idArticulo) {
     try {
         return ResponseEntity.ok().body(categoriaService.agregarArticulo(idCategoria, idArticulo));
@@ -117,7 +113,6 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
     }
 
     @DeleteMapping("/eliminar/articulo/{idSubCategoria}/{idArticulo}")
-
     public ResponseEntity<?> eliminarArticuloDeSubCategoria(@PathVariable Long idSubCategoria, @PathVariable Long idArticulo) {
         try {
             return ResponseEntity.ok().body(categoriaService.eliminarArticuloDeSubCategoria(idSubCategoria, idArticulo));
@@ -127,7 +122,6 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
         }
     }
     @PutMapping("/actualizar/subcategoria/{idSubCategoria}")
-
     public ResponseEntity<?> actualizarSubCategoria(@PathVariable Long idSubCategoria, @RequestBody Categoria nuevaSubCategoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.actualizarSubCategoria(idSubCategoria, nuevaSubCategoria));
@@ -138,7 +132,6 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
     }
 
     @DeleteMapping("/eliminar/subcategoria")
-
 public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long idCategoria, @RequestParam("idSubCategoria") Long idSubCategoria) {
     try {
         return ResponseEntity.ok().body(categoriaService.eliminarSubCategoria(idCategoria, idSubCategoria));
@@ -149,7 +142,6 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
 }
 
     @PostMapping("/reactivate/{id}")
-
     public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             categoriaService.reactivate(id);
@@ -179,7 +171,7 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
         }
     }
    @GetMapping("/categoriasPadre/{sucursalId}")
-public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
+    public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
     try {
         return ResponseEntity.ok().body(categoriaService.traerCategoriaPadre(sucursalId));
     } catch (Exception e) {
@@ -206,7 +198,6 @@ public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
     private CategoriaService catService;
 
     @PostMapping("/porEmpresa")
-
     public ResponseEntity<?> crearCategoriaporEmpresa(@RequestBody CategoriaEmpresaDTO categoriaDTO) throws Exception {
         try {
             Categoria nuevaCategoria = catService.crearCategoriaporEmpresa(categoriaDTO);
@@ -232,7 +223,6 @@ public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
     }
 
     @PutMapping("/{id}/eliminado")
-
     public ResponseEntity<Categoria> cambiarEstadoEliminado(@PathVariable Long id) {
         Categoria categoriaActualizada = catService.cambiarEstadoEliminado(id);
         return ResponseEntity.ok(categoriaActualizada);
@@ -240,7 +230,6 @@ public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
 
 
     @PostMapping("/subcategoriaConEmpresa")
-
     public ResponseEntity<?> crearSubCategoriaConEmpresa(@RequestBody SubCategoriaConEmpresaDTO subCategoriaDTO) throws IOException {
 
         return ResponseEntity.ok(catService.crearSubCategoriaConEmpresa(subCategoriaDTO));

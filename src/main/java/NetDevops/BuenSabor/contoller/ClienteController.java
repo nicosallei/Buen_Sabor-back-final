@@ -41,7 +41,7 @@ public class ClienteController {
         }
     }
     @PutMapping("/actualizar/{id}")
-    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
         try {
             return ResponseEntity.ok().body(clienteService.actualizarCliente(id, cliente));
@@ -50,7 +50,7 @@ public class ClienteController {
         }
     }
     @DeleteMapping("/eliminar/{id}")
-    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
+    //@PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         try {
             return ResponseEntity.ok().body(clienteService.eliminarCliente(id));
