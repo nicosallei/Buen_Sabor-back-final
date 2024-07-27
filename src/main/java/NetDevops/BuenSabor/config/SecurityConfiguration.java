@@ -89,7 +89,7 @@ public class SecurityConfiguration {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
-        // Asegúrate de que el nombre de la propiedad de reclamaciones coincida con el del token
+
         converter.setAuthoritiesClaimName("https://example_yt/roles");
         converter.setAuthorityPrefix(""); // No se usa prefijo para los roles
 

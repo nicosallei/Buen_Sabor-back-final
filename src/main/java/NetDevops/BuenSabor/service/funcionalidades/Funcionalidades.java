@@ -34,7 +34,6 @@ public class Funcionalidades {
         Path path = Paths.get(uploadDir, fileName);
         String ruta = path.toString();
 
-        // Aquí puedes guardar la ruta en la base de datos y setearla en la clase correspondiente
 
         return ruta;
     }
@@ -58,7 +57,6 @@ public class Funcionalidades {
 
             return imagenBase64;
         } catch (IOException e) {
-            // Si ocurre una excepción (por ejemplo, el archivo no se encuentra), retornar null
             return null;
         }
     }
@@ -69,10 +67,8 @@ public class Funcionalidades {
 
         // Verificar si el archivo existe
         if (file.exists()) {
-            // Si el archivo existe, intentar eliminarlo
             return file.delete();
         } else {
-            // Si el archivo no existe, retornar false
             return false;
         }
     }

@@ -38,13 +38,13 @@ public class CompraProductosService {
     private IEmpleadoRepository empleadoRepository;
 
   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
-    // Obtener los artículos directamente asignados a la categoría padre
+
     List<ArticuloManufacturado> articulosManufacturadosPadre = articuloManufacturadoRepository.findByCategoriaIdAndEliminadoFalse(categoriaId);
     List<ArticuloInsumo> articulosInsumosPadre = articuloInsumoRepository.findByCategoriaIdAndEliminadoFalse(categoriaId);
 
     List<CompraProductoDto> articulos = new ArrayList<>();
 
-    // Procesar los artículos de la categoría padre
+
     for (ArticuloManufacturado articulo : articulosManufacturadosPadre) {
         CompraProductoDto dto = convertToDto(articulo);
         articulos.add(dto);
@@ -54,7 +54,7 @@ public class CompraProductosService {
         articulos.add(dto);
     }
 
-    // Obtener y procesar los artículos de las subcategorías
+
     Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(categoriaId);
     for (Categoria subcategoria : subcategorias) {
         List<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByCategoriaIdAndEliminadoFalse(subcategoria.getId());
@@ -110,7 +110,7 @@ private CompraProductoDto convertToDto(Articulo articulo) {
         imagen.setUrl(imagePath);
         processedImages.add(imagen);
     }
-    dto.setImagenes(processedImages); // Convert Set to List
+    dto.setImagenes(processedImages);
 
     dto.setCategoriaId(articulo.getCategoria().getId());
     if (articulo.getSucursal() != null) {
@@ -158,7 +158,6 @@ private CompraProductoDto convertToDto(Articulo articulo) {
                 insumosNecesarios.merge(articulo.getId(), detalleDto.getCantidad(), Integer::sum);
             } else if (articulo instanceof ArticuloManufacturado) {
                 ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) articulo;
-                // Paso 4: Sumar el tiempo estimado de preparación del ArticuloManufacturado
                 tiempoTotalEspera += articuloManufacturado.getTiempoEstimadoMinutos() * detalleDto.getCantidad();
                 for (ArticuloManufacturadoDetalle detalle : ((ArticuloManufacturado) articulo).getArticuloManufacturadoDetalles()) {
                     insumosNecesarios.merge(detalle.getArticuloInsumo().getId(), detalle.getCantidad() * detalleDto.getCantidad(), Integer::sum);
@@ -197,17 +196,13 @@ if(cantidadCocineros.intValue() > 0){
 
             if (articulo instanceof ArticuloInsumo) {
                 ArticuloInsumo articuloInsumo = (ArticuloInsumo) articulo;
-                // Subtract the quantity from the stock of the ArticuloInsumo
                 articuloInsumo.setStockActual(articuloInsumo.getStockActual() - detalleDto.getCantidad());
-                // Save the updated ArticuloInsumo in the database
                 articuloRepository.save(articuloInsumo);
             } else if (articulo instanceof ArticuloManufacturado) {
                 ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) articulo;
                 for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
                     ArticuloInsumo articuloInsumo = detalle.getArticuloInsumo();
-                    // Subtract the quantity needed for the manufacturing from the stock of the ArticuloInsumo
                     articuloInsumo.setStockActual(articuloInsumo.getStockActual() - detalle.getCantidad());
-                    // Save the updated ArticuloInsumo in the database
                     articuloRepository.save(articuloInsumo);
                 }
             }

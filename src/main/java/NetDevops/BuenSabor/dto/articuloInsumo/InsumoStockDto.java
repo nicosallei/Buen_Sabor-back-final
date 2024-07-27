@@ -9,7 +9,7 @@ public class InsumoStockDto {
         this.stockActual = stockActual;
     }
 
-    // Getters y setters
+
     public String getDenominacion() {
         return denominacion;
     }

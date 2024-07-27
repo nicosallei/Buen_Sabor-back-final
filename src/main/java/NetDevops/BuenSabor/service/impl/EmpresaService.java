@@ -50,11 +50,11 @@ public class EmpresaService implements IEmpresaService {
             empresa.setId(id);
 
             if (empresa.getImagen() != null ) {
-                // Eliminar la imagen antigua
+
                 if(existingEmpresa.getImagen() != null){
                     funcionalidades.eliminarImagen(existingEmpresa.getImagen());
                 }
-                // Guardar la nueva imagen
+
                 String rutaImagen = funcionalidades.guardarImagen(empresa.getImagen(), UUID.randomUUID().toString() + ".jpg");
                 existingEmpresa.setImagen(rutaImagen);
                 empresa.setImagen(rutaImagen);
@@ -75,13 +75,13 @@ public boolean delete(Long id) throws Exception {
     try {
         Empresa empresa = empresaRepository.findById(id).orElseThrow(() -> new Exception("No se encontró la empresa con el id proporcionado"));
 
-        // Verificar si la empresa tiene alguna sucursal asociada activa
+
         List<Sucursal> sucursalesActivas = sucursalRepository.findByEmpresaIdAndEliminadoFalse(id);
         if (!sucursalesActivas.isEmpty()) {
             throw new Exception("No se puede modificar el estado de la empresa porque tiene sucursales asociadas activas");
         }
 
-        // Cambiar el estado de eliminado a no eliminado y viceversa
+
         empresa.setEliminado(!empresa.isEliminado());
         empresaRepository.save(empresa);
         return true;

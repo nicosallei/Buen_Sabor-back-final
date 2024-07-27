@@ -114,13 +114,13 @@ public Set<ArticuloManufacturado> listaArticuloManufacturado() throws Exception 
     try {
         Set<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByEliminadoFalse();
 
-        // Convertir las imágenes a base64
+
         for (ArticuloManufacturado articuloManufacturado : articulosManufacturados) {
             if (articuloManufacturado.getImagenes() != null) {
                 for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
                     try {
                         String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagen.getUrl());
-                        imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
+                        imagen.setUrl(imagenBase64);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -146,16 +146,16 @@ public Set<ArticuloManufacturado> listaArticuloManufacturado() throws Exception 
             }
             articuloManufacturado.setEliminado(true);
 
-            // Eliminar de manera lógica ArticuloManufacturadoDetalle
+
             for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
                 detalle.setEliminado(true);
-                detalleRepository.save(detalle); // Asegúrate de tener un repositorio para ArticuloManufacturadoDetalle
+                detalleRepository.save(detalle);
             }
 
-            // Eliminar de manera lógica las imágenes
+
             for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
                 imagen.setEliminado(true);
-                imagenRepository.save(imagen); // Asegúrate de tener un repositorio para ImagenArticulo
+                imagenRepository.save(imagen);
             }
 
             articuloManufacturadoRepository.save(articuloManufacturado);
@@ -186,7 +186,7 @@ public ArticuloManufacturadoDto actualizarArticuloManufacturado(Long id, Articul
             throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
 
-        //region Logica para eliminar Detalles
+
         Set<ArticuloManufacturadoDetalle> detallesViejos = detalleRepository.findByArticuloManufacturado_Id(id);
         Set<ArticuloManufacturadoDetalle> detallesNuevos = articuloManufacturado.getArticuloManufacturadoDetalles();
 
@@ -199,7 +199,7 @@ public ArticuloManufacturadoDto actualizarArticuloManufacturado(Long id, Articul
         });
         //endregion
 
-        //region Logica para eliminar Imagenes
+
         Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticulo_Id(id);
         Set<ImagenArticulo> imagenesNuevas = articuloManufacturado.getImagenes();
 
@@ -215,20 +215,20 @@ public ArticuloManufacturadoDto actualizarArticuloManufacturado(Long id, Articul
 
         if (articuloManufacturado.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
-                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
+
                 String filename = UUID.randomUUID().toString() + ".jpg";
                 try {
                     String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
-                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
-                    imagen.setArticulo(articuloManufacturado); // Asignar el artículo a la imagen
+                    imagen.setUrl(rutaImagen);
+                    imagen.setArticulo(articuloManufacturado);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
-                // Verificar si la imagen ya existe en el conjunto de imágenes viejas
+
                 boolean exists = imagenesViejas.stream().anyMatch(oldImage -> oldImage.getUrl().equals(imagen.getUrl()));
 
-                // Si la imagen no existe en las imágenes viejas y existe en las nuevas, guardarla
+
                 if (!exists && imagenesNuevas.contains(imagen)) {
                     imagenRepository.save(imagen);
                 }
@@ -267,7 +267,7 @@ public ArticuloManufacturadoDto actualizarArticuloManufacturado(Long id, Articul
                 ImagenArticulo imagen = articulo.getImagenes().iterator().next();
                 try {
                     String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagen.getUrl());
-                    dto.setImagen(imagenBase64); // Actualizar el campo imagen en ArticuloManufacturadoTablaDto con la imagen en base64
+                    dto.setImagen(imagenBase64);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -296,15 +296,15 @@ public ArticuloManufacturadoDto actualizarArticuloManufacturado(Long id, Articul
                 throw new Exception("No se encontro el articulo");
             }
             articuloManufacturado.setEliminado(false);
-            // Reactivar de manera lógica ArticuloManufacturadoDetalle
+
             for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
                 detalle.setEliminado(false);
-                detalleRepository.save(detalle); // Asegúrate de tener un repositorio para ArticuloManufacturadoDetalle
+                detalleRepository.save(detalle);
             }
-            // Reactivar de manera lógica las imágenes
+
             for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
                 imagen.setEliminado(false);
-                imagenRepository.save(imagen); // Asegúrate de tener un repositorio para ImagenArticulo
+                imagenRepository.save(imagen);
             }
 
             articuloManufacturadoRepository.save(articuloManufacturado);
@@ -331,12 +331,12 @@ public ArticuloManufacturadoDto actualizarArticuloManufacturado(Long id, Articul
             throw new Exception("No se encontro el articulo");
         }
 
-        // Convertir las imágenes a base64
+
         if (Manufacturado.getImagenes() != null) {
             for (ImagenArticulo imagen : Manufacturado.getImagenes()) {
                 try {
                     String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
-                    imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
+                    imagen.setUrl(imagenBase64);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

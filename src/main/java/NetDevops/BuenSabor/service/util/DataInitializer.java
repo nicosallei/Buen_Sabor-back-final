@@ -50,7 +50,7 @@ public class DataInitializer {
             }
         }
 
-        // Suponiendo que tienes un método similar para verificar si ya existen localidades
+
         if (localidadRepository.findAll().isEmpty()) {
             List<Provincia> provincias = provinciaRepository.findAll();
             provincias.forEach(provincia -> localidadService.guardarLocalidadesDeProvincia(String.valueOf(provincia.getId())));

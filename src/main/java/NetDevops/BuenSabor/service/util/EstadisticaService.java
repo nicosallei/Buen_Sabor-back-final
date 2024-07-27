@@ -43,7 +43,7 @@ public class EstadisticaService {
     }
 
   public Map<YearMonth, Double> getIngresosPorRangoDeMeses(YearMonth startMonth, YearMonth endMonth, Long sucursalId) {
-    // Convert YearMonth to LocalDate
+
     LocalDate startDate = startMonth.atDay(1);
     LocalDate endDate = endMonth.atEndOfMonth();
 
@@ -126,7 +126,7 @@ public class EstadisticaService {
                 for (ArticuloManufacturadoDetalle amd : manufacturado.getArticuloManufacturadoDetalles()) {
                     costoProduccion += amd.getArticuloInsumo().getPrecioCompra() * amd.getCantidad();
                 }
-                double precioVenta = manufacturado.getPrecioVenta(); // Asumiendo que existe este campo
+                double precioVenta = manufacturado.getPrecioVenta();
                 double ganancia = (precioVenta - costoProduccion) * detalle.getCantidad();
                 gananciaPorPedido += ganancia;
             }

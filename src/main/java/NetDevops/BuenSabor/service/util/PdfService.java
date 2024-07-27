@@ -33,12 +33,12 @@ public class PdfService {
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
 
-        // Add an empty paragraph with negative margin to move the logo up
-        Paragraph emptyParagraph = new Paragraph().setMarginBottom(-10); // Adjust the value as needed
+
+        Paragraph emptyParagraph = new Paragraph().setMarginBottom(-10);
         document.add(emptyParagraph);
 
-        // Add logo/image if available
-        String logoPath = "src/main/resources/images/logo.png"; // Replace with the actual path to your image
+
+        String logoPath = "src/main/resources/images/logo.png";
         File logoFile = new File(logoPath);
         if (logoFile.exists()) {
             try {
@@ -47,12 +47,12 @@ public class PdfService {
                 logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 document.add(logo);
             } catch (MalformedURLException e) {
-                // Handle the error or log it if needed
+
                 e.printStackTrace();
             }
         }
 
-        // Add title and subtitle
+
         Paragraph title = new Paragraph("Detalle Factura")
                 .setTextAlignment(TextAlignment.CENTER)
                 .setBold()
@@ -60,7 +60,7 @@ public class PdfService {
                 .setMarginBottom(5);
         document.add(title);
 
-        // Add branch information
+
         Sucursal sucursal = pedido.getSucursal();
         Domicilio sucursalDomicilio = sucursal.getDomicilio();
         Localidad sucursalLocalidad = sucursalDomicilio.getLocalidad();
@@ -69,12 +69,12 @@ public class PdfService {
         String formattedDate = pedido.getFechaPedido().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String formattedTime = pedido.getHora().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        // Create a table for order and branch information
+
         Table headerTable = new Table(new float[]{1, 1, 1});
         headerTable.setWidth(UnitValue.createPercentValue(100));
-        headerTable.setMarginBottom(5); // Reduced margin between sections
+        headerTable.setMarginBottom(5);
 
-        // Add branch information
+
         Paragraph branchInfo = new Paragraph()
                 .add("Información de la Sucursal:\n")
                 .add("Nombre: " + sucursal.getNombre() + "\n")
@@ -86,10 +86,10 @@ public class PdfService {
                 .setVerticalAlignment(VerticalAlignment.MIDDLE);
         headerTable.addCell(new Cell().add(branchInfo).setBorder(Border.NO_BORDER));
 
-        // Add empty cell for spacing
+
         headerTable.addCell(new Cell().setBorder(Border.NO_BORDER));
 
-        // Add order information
+
         Paragraph orderInfo = new Paragraph()
                 .add("Número de Pedido: " + pedido.getId() + "\n")
                 .add("Fecha: " + formattedDate + "\n")
@@ -101,10 +101,10 @@ public class PdfService {
 
         document.add(headerTable);
 
-        // Add a line separator
+
         document.add(new Paragraph("\n"));
 
-        // Add client information with reduced margin
+
         Paragraph clientInfo = new Paragraph()
                 .add("Información del Cliente:\n")
                 .add("Nombre: " + cliente.getNombre() + " " + cliente.getApellido() + "\n")
@@ -116,7 +116,7 @@ public class PdfService {
                 .setPadding(10);
         document.add(clientInfo);
 
-        // Add "Detalle Productos" above the table
+
         Paragraph buenSabor = new Paragraph("Detalle Pedido")
                 .setTextAlignment(TextAlignment.CENTER)
                 .setBold()
@@ -124,8 +124,7 @@ public class PdfService {
                 .setMarginTop(20);
         document.add(buenSabor);
 
-        // Create a table with 4 columns
-        // Create a table with 4 columns
+
         Table table = new Table(new float[]{4, 2, 1, 2});
         table.setWidth(UnitValue.createPercentValue(100));
         table.addHeaderCell(new Cell().add(new Paragraph("Producto")).setBackgroundColor(new DeviceRgb(200, 200, 200)));
@@ -133,20 +132,20 @@ public class PdfService {
         table.addHeaderCell(new Cell().add(new Paragraph("Cantidad")).setBackgroundColor(new DeviceRgb(200, 200, 200)));
         table.addHeaderCell(new Cell().add(new Paragraph("Total")).setBackgroundColor(new DeviceRgb(200, 200, 200)));
 
-// Initialize total variables
+
         double totalCalculado = 0;
 
-// Number format for currency
+
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "AR"));
 
-// Iterate over each PedidoDetalle
+
         for (PedidoDetalle detalle : pedido.getPedidoDetalle()) {
-            // Check if the Articulo is an instance of ArticuloManufacturado
+
             if (detalle.getArticulo() instanceof ArticuloManufacturado) {
                 ArticuloManufacturado articulo = (ArticuloManufacturado) detalle.getArticulo();
                 table.addCell(new Cell().add(new Paragraph(articulo.getDenominacion())).setBackgroundColor(new DeviceRgb(240, 240, 240)));
                 table.addCell(new Cell().add(new Paragraph(currencyFormat.format(articulo.getPrecioVenta()))).setBackgroundColor(new DeviceRgb(240, 240, 240)));
-                // Center the quantity in the cell
+
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(detalle.getCantidad())).setTextAlignment(TextAlignment.CENTER)).setBackgroundColor(new DeviceRgb(240, 240, 240)));
                 double totalFila = articulo.getPrecioVenta() * detalle.getCantidad();
                 table.addCell(new Cell().add(new Paragraph(currencyFormat.format(totalFila))).setBackgroundColor(new DeviceRgb(240, 240, 240)));
@@ -154,13 +153,13 @@ public class PdfService {
             }
         }
 
-// Add the table to the document
+
         document.add(table);
 
-        // Calculate discount
+
         double descuento = totalCalculado - pedido.getTotal();
 
-        // Add the total amount and discount with styling
+
         Paragraph totals = new Paragraph()
                 .add("Descuento realizado: " + currencyFormat.format(descuento) + "\n")
                 .add("Total: " + currencyFormat.format(pedido.getTotal()))

@@ -38,7 +38,7 @@ public class PromocionService implements IPromocionService {
                 promocion.setImagen(rutaImagen);
             }
 
-            // Establecer la relación bidireccional con PromocionDetalle
+
             for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
                 detalle.setPromocion(promocion);
             }
@@ -149,17 +149,17 @@ public class PromocionService implements IPromocionService {
                     existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
                 }
                 if (newPromocion.getImagen() != null ) {
-                    // Eliminar la imagen antigua
+
                         if(existingPromocion.getImagen() != null){
                             funcionalidades.eliminarImagen(existingPromocion.getImagen());
                         }
-                    // Guardar la nueva imagen
+
                     String rutaImagen = funcionalidades.guardarImagen(newPromocion.getImagen(), UUID.randomUUID().toString() + ".jpg");
                     existingPromocion.setImagen(rutaImagen);
                 }
 
 
-                // Marcar como eliminadas las PromocionDetalle que no están en newPromocion
+
                 for (PromocionDetalle detalle : existingPromocion.getPromocionDetalles()) {
                     if (!newPromocion.getPromocionDetalles().contains(detalle)) {
                         detalle.setEliminado(true);
@@ -188,7 +188,7 @@ public class PromocionService implements IPromocionService {
                 promocion.setEliminado(nuevoEstado);
 
 
-                // Cambiar el estado de eliminado de las PromocionDetalle asociadas
+
                 for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
                     detalle.setEliminado(nuevoEstado);
                 }
@@ -221,7 +221,7 @@ public class PromocionService implements IPromocionService {
                     promocion.setEliminado(false);
 
 
-                    // Reactivar las PromocionDetalle asociadas
+
                     for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
                         if (detalle.isEliminado()) {
                             detalle.setEliminado(false);
@@ -247,7 +247,7 @@ public class PromocionService implements IPromocionService {
             for (PromocionDetalle detalle : detalles) {
                 Promocion promocion = detalle.getPromocion();
                 detalle.setPromocion(null);
-                promocion.getPromocionDetalles().remove(detalle); // Elimina la referencia en promocion_promocion_detalles
+                promocion.getPromocionDetalles().remove(detalle);
                 promocionDetalleRepository.save(detalle);
                 promocionDetalleRepository.delete(detalle);
             }
@@ -296,16 +296,16 @@ private boolean tieneStockSuficiente(Promocion promocion) {
         ArticuloManufacturado articuloManufacturado = detallePromocion.getArticuloManufacturado();
         for (ArticuloManufacturadoDetalle detalleManufacturado : articuloManufacturado.getArticuloManufacturadoDetalles()) {
             ArticuloInsumo insumo = detalleManufacturado.getArticuloInsumo();
-            // La cantidad necesaria del insumo por cada unidad del artículo manufacturado
+
             int cantidadNecesariaPorUnidad = detalleManufacturado.getCantidad();
-            // La cantidad total necesaria del insumo para la cantidad de la promoción
+
             int cantidadTotalNecesaria = cantidadNecesariaPorUnidad * detallePromocion.getCantidad();
             if (insumo.getStockActual() < cantidadTotalNecesaria) {
-                return false; // No hay suficiente stock del insumo para esta promoción
+                return false;
             }
         }
     }
-    return true; // Todos los insumos tienen suficiente stock
+    return true;
 }
 
 public int calcularCantidadMaxima(Promocion promocion) {

@@ -38,12 +38,12 @@ public class ArticuloInsumoService implements IArticuloInsumoService {
         try {
             ArticuloInsumo articuloInsumo = articuloInsumoRepository.findById(id).orElseThrow(() -> new Exception("No se encontro el articulo"));
 
-            // Verificar si el ArticuloInsumo está asignado a algún ArticuloManufacturado
+
             if (articuloManufacturadoRepository.existsByArticuloInsumo_IdAndEliminadoFalse(id)) {
                 throw new Exception("No se puede eliminar el articulo porque está asignado a un ArticuloManufacturado");
             }
 
-            // Marcar las imágenes correspondientes al ArticuloInsumo como eliminadas
+
             Set<ImagenArticulo> imagenes = articuloInsumo.getImagenes();
             if (imagenes != null) {
                 for (ImagenArticulo imagen : imagenes) {
@@ -121,13 +121,8 @@ public ArticuloInsumo cargar(ArticuloInsumo articuloInsumo) throws Exception {
 
         if (articuloInsumo.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
-                // Generar un nombre de archivo único para cada imagen
                 String filename = UUID.randomUUID().toString() + ".jpg";
-
-                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
                 String ruta = funcionalidades.guardarImagen(imagen.getUrl(), filename);
-
-                // Actualizar el campo url en ImagenArticulo
                 imagen.setUrl(ruta);
                 imagen.setArticulo(articuloInsumo);
             }
@@ -202,20 +197,17 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
 
         if (articuloInsumo.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
-                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
                 String filename = UUID.randomUUID().toString() + ".jpg";
                 try {
                     String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
-                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
-                    imagen.setArticulo(articuloInsumo); // Asignar el artículo a la imagen
+                    imagen.setUrl(rutaImagen);
+                    imagen.setArticulo(articuloInsumo);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
-                // Verificar si la imagen ya existe en el conjunto de imágenes viejas
                 boolean exists = imagenesViejas.stream().anyMatch(oldImage -> oldImage.getUrl().equals(imagen.getUrl()));
 
-                // Si la imagen no existe en las imágenes viejas y existe en las nuevas, guardarla
                 if (!exists && imagenesNuevas.contains(imagen)) {
                     imagenRepository.save(imagen);
                 }

@@ -150,23 +150,23 @@ public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{
 
         switch (rolActual) {
             case ADMINISTRADOR:
-                // El administrador puede ver todos los pedidos
+
                 return todosLosPedidos;
 
             case EMPLEADO_CAJA:
-                // El empleado de caja puede ver solo los pedidos de su sucursal
+
                 return todosLosPedidos.stream()
                     .filter(pedido -> pedido.getSucursal().equals(usuario.getEmpleado().getSucursal()))
                     .collect(Collectors.toList());
 
             case EMPLEADO_REPARTIDOR:
-                // El repartidor puede ver solo los pedidos de su empresa
+
                 return todosLosPedidos.stream()
                     .filter(pedido -> pedido.getSucursal().getEmpresa().equals(usuario.getEmpleado().getSucursal().getEmpresa()))
                     .collect(Collectors.toList());
 
             default:
-                // Otros roles no pueden ver ningún pedido
+
                 return new ArrayList<>();
         }
     } catch (Exception e) {
@@ -183,7 +183,7 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
                 throw new Exception("Pedido no encontrado");
             }
 
-            // Comprobar si el estado actual es FACTURADO
+
             if (pedido.getEstado() == Estado.ENTREGADO) {
                 throw new Exception("No se puede cambiar el estado de un pedido ya facturado");
             } else if (pedido.getEstado() == Estado.CONFIRMADO && nuevoEstado == Estado.PENDIENTE) {
@@ -195,7 +195,7 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
 
                 // Generate PDF
                 byte[] pdf = pdfService.createPdfFactura(pedido,cliente);
-                // Send email
+
                 String to = cliente.getEmail(); // replace with the customer's email
                 String subject = "Pedido creado";
                 String content = "Su pedido ha sido creado con éxito. Encuentra adjunta la factura.";
@@ -208,11 +208,11 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
             ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) detalle.getArticulo();
             for (ArticuloManufacturadoDetalle detalleManufacturado : articuloManufacturado.getArticuloManufacturadoDetalles()) {
                 ArticuloInsumo articuloInsumo = detalleManufacturado.getArticuloInsumo();
-                // Calcular la cantidad necesaria para devolver al stock
+
                 int cantidadNecesaria = detalleManufacturado.getCantidad() * detalle.getCantidad();
-                // Actualizar el stockActual de ArticuloInsumo
+
                 articuloInsumo.setStockActual(articuloInsumo.getStockActual() + cantidadNecesaria);
-                // Guardar el ArticuloInsumo actualizado
+
                 articuloRepository.save(articuloInsumo);
             }
         }
@@ -222,7 +222,7 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
             pedido.setEstado(nuevoEstado);
             Pedido savedPedido = pedidoRepository.save(pedido);
 
-            return convertToDto(savedPedido); // Convertir a PedidoDto antes de devolver
+            return convertToDto(savedPedido);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

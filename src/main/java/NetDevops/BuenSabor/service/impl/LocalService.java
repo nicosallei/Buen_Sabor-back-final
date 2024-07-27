@@ -46,12 +46,11 @@ public Set<CategoriaDto> traerTodoCategoria(Long sucursalId) throws Exception {
                 categoriaDto.setId(categoria.getId());
                 categoriaDto.setEliminado(categoria.isEliminado());
 
-                // Convertir las sucursales asociadas a SucursalSimpleDto y agregarlas a CategoriaDto
+
                 for (Sucursal sucursal : categoria.getSucursales()) {
                     SucursalSimpleDto sucursalSimpleDto = new SucursalSimpleDto();
                     sucursalSimpleDto.setNombre(sucursal.getNombre());
                     sucursalSimpleDto.setId(sucursal.getId());
-                    // Agregar más campos si es necesario
                     categoriaDto.getSucursales().add(sucursalSimpleDto);
                 }
 
@@ -83,7 +82,7 @@ public Set<CategoriaDto> traerTodoCategoria(Long sucursalId) throws Exception {
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursales_Id(sucursalId);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria categoria : listaCategoriaOriginal) {
-            // Solo agregar a la lista las categorías que no tienen una categoría padre
+
 
                 CategoriaDto categoriaDto = new CategoriaDto();
                 categoriaDto.setDenominacion(categoria.getDenominacion());
@@ -91,12 +90,11 @@ public Set<CategoriaDto> traerTodoCategoria(Long sucursalId) throws Exception {
                 categoriaDto.setId(categoria.getId());
                 categoriaDto.setEliminado(categoria.isEliminado());
 
-                // Convertir las sucursales asociadas a SucursalSimpleDto y agregarlas a CategoriaDto
+
                 for (Sucursal sucursal : categoria.getSucursales()) {
                     SucursalSimpleDto sucursalSimpleDto = new SucursalSimpleDto();
                     sucursalSimpleDto.setNombre(sucursal.getNombre());
                     sucursalSimpleDto.setId(sucursal.getId());
-                    // Agregar más campos si es necesario
                     categoriaDto.getSucursales().add(sucursalSimpleDto);
                 }
 
@@ -129,12 +127,10 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
     subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
     subCategoriaDto.setEliminado(categoria.isEliminado());
 
-    // Convertir las sucursales asociadas a SucursalSimpleDto y agregarlas a SubCategoriaDto
     for (Sucursal sucursal : categoria.getSucursales()) {
         SucursalSimpleDto sucursalSimpleDto = new SucursalSimpleDto();
         sucursalSimpleDto.setId(sucursal.getId());
         sucursalSimpleDto.setNombre(sucursal.getNombre());
-        // Agregar más campos si es necesario
         subCategoriaDto.getSucursales().add(sucursalSimpleDto);
     }
 
@@ -156,10 +152,7 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
         throw new Exception("La categoría o la sucursal no existen");
     }
 
-    // Agregar la sucursal a la categoría
     categoria.getSucursales().add(sucursal);
-
-    // Agregar la sucursal a las subcategorías de la categoría
     agregarSucursalASubcategorias(categoria, sucursal);
 
     return categoriaRepository.save(categoria);
@@ -169,7 +162,6 @@ private void agregarSucursalASubcategorias(Categoria categoria, Sucursal sucursa
     for (Categoria subCategoria : categoria.getSubCategorias()) {
         subCategoria.getSucursales().add(sucursal);
 
-        //Recursivamente agregar la sucursal a las subcategorías de la subcategoría
         agregarSucursalASubcategorias(subCategoria, sucursal);
     }
 }
@@ -182,10 +174,8 @@ public CategoriaDto desasociarSucursalDeCategoria(Long categoriaId, Long sucursa
         throw new Exception("La categoría o la sucursal no existen");
     }
 
-    // Remover la sucursal de la categoría
     categoria.getSucursales().remove(sucursal);
 
-    // Remover la sucursal de las subcategorías de la categoría
     desasociarSucursalDeSubcategorias(categoria, sucursal);
     categoriaRepository.save(categoria);
     CategoriaDto categoriaDto = new CategoriaDto();
@@ -201,7 +191,6 @@ private void desasociarSucursalDeSubcategorias(Categoria categoria, Sucursal suc
     for (Categoria subCategoria : categoria.getSubCategorias()) {
         subCategoria.getSucursales().remove(sucursal);
 
-        // Recursivamente remover la sucursal de las subcategorías de la subcategoría
         desasociarSucursalDeSubcategorias(subCategoria, sucursal);
     }
 }
@@ -217,7 +206,6 @@ public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId, Lo
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursalesNotContainsAndEmpresa(sucursal, empresa);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
-            // Solo agregar a la lista las categorías que no tienen una categoría padre
             if (lista.getCategoriaPadre() == null) {
                 CategoriaDto categoriadto = new CategoriaDto();
                 categoriadto.setDenominacion(lista.getDenominacion());
@@ -414,12 +402,11 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
 
    public List<ArticuloManufacturadoTablaDto> buscarArticulosPorSucursal(Long sucursalId) throws Exception {
     try {
-        // Buscar los ArticuloManufacturado en la base de datos asociados a la Sucursal
+
         List<ArticuloManufacturado> articulos = articuloManufacturadoRepository.findBySucursal_Id(sucursalId);
         if (articulos.isEmpty()) {
             throw new Exception("No se encontraron ArticulosManufacturados para la Sucursal con id " + sucursalId);
         }
-        // Convertir a DTO antes de devolver
         List<ArticuloManufacturadoTablaDto> articulosDto = new ArrayList<>();
         for (ArticuloManufacturado articulo : articulos) {
             articulosDto.add(convertirArticuloManufacturadoToDto(articulo));
