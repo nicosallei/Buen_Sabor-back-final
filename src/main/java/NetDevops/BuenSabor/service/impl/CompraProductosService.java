@@ -148,7 +148,7 @@ private CompraProductoDto convertToDto(Articulo articulo) {
         int tiempoTotalEspera = 0;
 
         Long cantidadCocineros = empleadoRepository.countBySucursalIdAndRolAndEliminadoFalse(compraPedidoDto.getSucursalId(), Rol.EMPLEADO_COCINA);
-        int timepoPreparacionCocina = calcularTiempoEsperaArticulosManufacturados(compraPedidoDto.getSucursalId()) / cantidadCocineros.intValue();
+        int timepoPreparacionCocina = calcularTiempoEsperaArticulosManufacturados(compraPedidoDto.getSucursalId()); // cantidadCocineros.intValue();
         // Calcular la cantidad total necesaria de cada insumo
         for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {
             Articulo articulo = articuloRepository.findById(detalleDto.getProducto().getId())
@@ -165,8 +165,11 @@ private CompraProductoDto convertToDto(Articulo articulo) {
                 }
             }
         }
-        tiempoTotalEspera += timepoPreparacionCocina;
 
+        tiempoTotalEspera += timepoPreparacionCocina;
+if(cantidadCocineros.intValue() > 0){
+    tiempoTotalEspera = tiempoTotalEspera / cantidadCocineros.intValue();
+}
         // Verificar que hay suficiente stock para cada insumo
         for (Map.Entry<Long, Integer> entry : insumosNecesarios.entrySet()) {
             ArticuloInsumo insumo = articuloInsumoRepository.findById(entry.getKey())

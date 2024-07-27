@@ -1,7 +1,9 @@
 package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.entities.Empleado;
+import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import NetDevops.BuenSabor.repository.IEmpleadoRepository;
+import NetDevops.BuenSabor.repository.IUsuarioEmpleadoRepository;
 import NetDevops.BuenSabor.service.IEmpleadoService;
 import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ public class EmpleadoService implements IEmpleadoService {
     private IEmpleadoRepository empleadoRepository;
     @Autowired
     private Funcionalidades funcionalidades;
+    @Autowired
+    private IUsuarioEmpleadoRepository usuarioEmpleadoRepository;
     @Override
     public Empleado crearEmpleado(Empleado empleado) throws Exception{
         try {
@@ -51,6 +55,11 @@ public class EmpleadoService implements IEmpleadoService {
             }
 
             empleado.setId(id);
+            empleado.setFechaNacimiento(empleadoActual.getFechaNacimiento());
+            UsuarioEmpleado usuarioEmpleado = usuarioEmpleadoRepository.findById(empleadoActual.getUsuarioEmpleado().getId()).orElse(null);
+            usuarioEmpleado.setUsername(empleado.getEmail());
+            usuarioEmpleadoRepository.save(usuarioEmpleado);
+            empleado.setUsuarioEmpleado(usuarioEmpleado);
             return empleadoRepository.save(empleado);
         } catch (Exception e) {
             throw new Exception(e.getMessage());

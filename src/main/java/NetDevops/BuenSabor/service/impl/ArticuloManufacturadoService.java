@@ -42,40 +42,41 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
 
     //region Cargar
 
-@Override
-public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado articuloManufacturado) throws Exception {
-    try {
+    @Override
+    public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado articuloManufacturado) throws Exception {
+        try {
+            Long sucursalId = articuloManufacturado.getSucursal().getId();
 
-        if (articuloManufacturadoRepository.existsByDenominacionAndEliminadoFalse(articuloManufacturado.getDenominacion())) {
-            throw new Exception("Ya existe un articulo con esa denominacion");
-        }
-        if (articuloManufacturadoRepository.existsByCodigoAndEliminadoFalse(articuloManufacturado.getCodigo())) {
-            throw new Exception("Ya existe un articulo con ese codigo");
-        }
-
-        if (articuloManufacturado.getImagenes() != null) {
-            for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
-                // Generar un nombre de archivo único para cada imagen
-                String filename = UUID.randomUUID().toString() + ".jpg";
-
-                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
-                String ruta = funcionalidades.guardarImagen(imagen.getUrl(), filename);
-
-                // Actualizar el campo url en ImagenArticulo
-                imagen.setUrl(ruta);
-                imagen.setArticulo(articuloManufacturado);
+            if (articuloManufacturadoRepository.existsByDenominacionAndSucursal_IdAndEliminadoFalse(articuloManufacturado.getDenominacion(), sucursalId)) {
+                throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
             }
-        }
+            if (articuloManufacturadoRepository.existsByCodigoAndSucursal_IdAndEliminadoFalse(articuloManufacturado.getCodigo(), sucursalId)) {
+                throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
+            }
 
-        for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
-            detalle.setArticuloManufacturado(articuloManufacturado);
-        }
+            if (articuloManufacturado.getImagenes() != null) {
+                for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
+                    // Generar un nombre de archivo único para cada imagen
+                    String filename = UUID.randomUUID().toString() + ".jpg";
 
-        return articuloManufacturadoRepository.save(articuloManufacturado);
-    } catch (Exception e) {
-        throw new Exception(e);
+                    // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
+                    String ruta = funcionalidades.guardarImagen(imagen.getUrl(), filename);
+
+                    // Actualizar el campo url en ImagenArticulo
+                    imagen.setUrl(ruta);
+                    imagen.setArticulo(articuloManufacturado);
+                }
+            }
+
+            for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                detalle.setArticuloManufacturado(articuloManufacturado);
+            }
+
+            return articuloManufacturadoRepository.save(articuloManufacturado);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
-}
 
     //endregion
 

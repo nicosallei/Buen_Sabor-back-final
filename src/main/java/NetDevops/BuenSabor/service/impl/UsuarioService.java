@@ -116,6 +116,8 @@ public class UsuarioService implements IUsuarioService {
         userResponse.setRol(empleado.getRol());
         userResponse.setIdUsuario(empleado.getId());
         userResponse.setIdEmpleado(empleado.getId());
+        userResponse.setIdSucursal(empleado.getSucursal().getId());
+        userResponse.setIdEmpresa(empleado.getSucursal().getEmpresa().getId());
 
         return userResponse;
     }
