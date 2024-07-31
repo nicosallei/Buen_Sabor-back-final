@@ -27,5 +27,6 @@ public class ArticuloManufacturado extends Articulo{
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "articuloManufacturado")
     @JsonManagedReference
     @Builder.Default
+    @ToString.Exclude
     private Set<ArticuloManufacturadoDetalle> articuloManufacturadoDetalles = new HashSet<>();
 }

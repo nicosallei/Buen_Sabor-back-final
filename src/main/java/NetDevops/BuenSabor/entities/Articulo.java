@@ -38,6 +38,7 @@ public abstract class Articulo extends Base{
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
+    @ToString.Exclude
     protected Categoria categoria;
 
     @ManyToOne

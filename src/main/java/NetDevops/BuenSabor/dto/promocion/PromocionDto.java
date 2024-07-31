@@ -29,12 +29,12 @@ public class PromocionDto extends BaseDto {
         private String descripcionDescuento;
         private Double precioPromocional;
         private TipoPromocion tipoPromocion;
-        private int cantidadMaximaDisponible;
+        private int cantidadMaximaCompra;
         private Set<PromocionDetalleDto> promocionDetallesDto = new HashSet<>();
         //private Set<ImagenPromocion> imagenes = new HashSet<>();
         private String imagen;
         //private Set<Sucursal> sucursales = new HashSet<>();
-        private List<ArticuloManufacturadoCantidadDto> articulosManufacturadosCantidad;
+       private List<ArticuloManufacturadoCantidadDto> articulosManufacturadosCantidad;
     }
 
 

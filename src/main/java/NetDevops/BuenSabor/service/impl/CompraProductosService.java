@@ -194,6 +194,9 @@ if(cantidadCocineros.intValue() > 0){
             Articulo articulo = articuloRepository.findById(detalleDto.getProducto().getId())
                     .orElseThrow(() -> new NoSuchElementException("Articulo no encontrado con id: " + detalleDto.getProducto().getId()));
 
+            // Debug statement to print the class name of articulo
+            System.out.println("Articulo class: " + articulo.getClass().getName());
+
             if (articulo instanceof ArticuloInsumo) {
                 ArticuloInsumo articuloInsumo = (ArticuloInsumo) articulo;
                 articuloInsumo.setStockActual(articuloInsumo.getStockActual() - detalleDto.getCantidad());
@@ -202,9 +205,12 @@ if(cantidadCocineros.intValue() > 0){
                 ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) articulo;
                 for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
                     ArticuloInsumo articuloInsumo = detalle.getArticuloInsumo();
-                    articuloInsumo.setStockActual(articuloInsumo.getStockActual() - detalle.getCantidad());
+                    articuloInsumo.setStockActual(articuloInsumo.getStockActual() - (detalle.getCantidad()*detalleDto.getCantidad()));
                     articuloRepository.save(articuloInsumo);
                 }
+            } else {
+                // Debug statement if articulo is neither ArticuloInsumo nor ArticuloManufacturado
+                System.out.println("Articulo is neither ArticuloInsumo nor ArticuloManufacturado");
             }
 
             PedidoDetalle detalle = new PedidoDetalle();

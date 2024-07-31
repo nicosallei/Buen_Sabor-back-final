@@ -26,15 +26,18 @@ public class Categoria extends Base{
 
     @OneToMany(mappedBy = "categoria")
     @Builder.Default
+    @ToString.Exclude
     private Set<Articulo> articulos = new HashSet<>();
 //----------
 
     @OneToMany(mappedBy = "categoriaPadre", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Categoria> subCategorias;
 //------
 
     @ManyToOne
     @JoinColumn(name = "categoria_padre_id")
+    @ToString.Exclude
     private Categoria categoriaPadre;
 
     @ManyToOne

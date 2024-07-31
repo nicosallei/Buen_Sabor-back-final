@@ -30,6 +30,6 @@ public class ArticuloManufacturadoDto extends BaseDto {
     private CategoriaDto categoria;
     private Sucursal sucursal;
     private Set<ArticuloManufacturadoDetalleDto> articuloManufacturadoDetallesDto = new HashSet<>();
-
+    private int cantidadMaximaDisponible;
 
 }

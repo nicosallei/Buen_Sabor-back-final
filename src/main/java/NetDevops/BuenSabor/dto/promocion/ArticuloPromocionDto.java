@@ -22,6 +22,7 @@ public class ArticuloPromocionDto extends BaseDto {
     protected Set<ImagenArticulo> imagenes = new HashSet<>();
     protected String codigo;
     protected UnidadMedida unidadMedida;
+    private Long cantidadMaximaCompra;
 
     public void setImagenesConRutaModificada(Set<ImagenArticulo> imagenesOriginales) {
         this.imagenes = imagenesOriginales.stream()

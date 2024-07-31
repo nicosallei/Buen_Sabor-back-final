@@ -102,6 +102,10 @@ public class PromocionService implements IPromocionService {
         dto.setImagenesConRutaModificada(articuloManufacturado.getImagenes());
         dto.setCodigo(articuloManufacturado.getCodigo());
         dto.setUnidadMedida(articuloManufacturado.getUnidadMedida());
+        Long cantidadMaximaCompra = Long.valueOf(articuloManufacturado.getArticuloManufacturadoDetalles().stream()
+                .map(detalle -> detalle.getArticuloInsumo().getStockActual() / detalle.getCantidad())
+                .min(Long::compare).orElse(0));
+        dto.setCantidadMaximaCompra(cantidadMaximaCompra);
         return dto;
     }
 
@@ -112,6 +116,7 @@ public class PromocionService implements IPromocionService {
         dto.setCantidad(promocionDetalle.getCantidad());
         dto.setArticuloManufacturadoDto(convertirArticuloToDto(promocionDetalle.getArticuloManufacturado()));
         dto.setImagenPromocion(promocionDetalle.getImagenPromocion());
+
         return dto;
     }
 
@@ -285,7 +290,7 @@ public class PromocionService implements IPromocionService {
             .filter(promocion -> tieneStockSuficiente(promocion))
             .map(promocion -> {
                 PromocionDto dto = convertToDto(promocion);
-                dto.setCantidadMaximaDisponible(calcularCantidadMaxima(promocion));
+                dto.setCantidadMaximaCompra(calcularCantidadMaxima(promocion));
                 return dto;
             })
             .collect(Collectors.toList());
